@@ -1,0 +1,162 @@
+\documentclass[12pt,reqno]{amsart}
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{proof}
+\usepackage{centernot}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{courier}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small, columns=fullflexible, language=sql}
+\definecolor{mySucces}{RGB}{40, 167, 69}
+\definecolor{myFail}{RGB}{220, 53, 69}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\st}[0]{\text{ s.t. }}
+\newcommand{\where}[0]{\text{ where }}
+\newcommand{\pr}[0]{\text{Pr}}
+\newcommand{\mand}[0]{\text{ and }}
+\newcommand{\msgspc}[0]{\mathcal{M}}
+\newcommand{\cphspc}[0]{\mathcal{C}}
+\newcommand{\keyspc}[0]{\mathcal{K}}
+\newcommand{\advrs}[0]{\mathcal{A}}
+\newcommand{\oracle}[0]{\mathcal{O}}
+\newcommand{\correctans}[0]{\colorbox{mySucces}{CORRECT}}
+\newcommand{\falseans}[0]{\colorbox{myFail}{FALSE}}
+\newcommand\MyBox[2]{
+  \fbox{\lower0.75cm
+    \vbox to 1.7cm{\vfil
+      \hbox to 1.7cm{\hfil\parbox{1.4cm}{#1\\#2}\hfil}
+      \vfil}%
+  }%
+}
+\graphicspath{ {./} }
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}    
+\begin{document}
+
+\begin{center}
+\large\textbf{Homework 4 \\ COMP530 Fall 2020 - Data Privacy and Security \\}
+\normalsize\textbf{ Erhan Tezcan 0070881 \\ 10.01.2021} \\
+\end{center}
+
+\begin{center}
+\line(1,0){250}
+\end{center}
+
+%
+%\begin{enumerate}[label=(\alph*)]
+%\item an apple
+%\item a banana
+%\item a carrot
+%\item a durian
+%\end{enumerate}
+%
+
+%	\begin{lstlisting}[language=sql]
+%REVOKE ALL
+%ON *
+%FROM Frank
+%	\end{lstlisting}
+
+\section*{Answers}
+\textbf{Answer 1:} 
+\begin{enumerate}[label=(\alph*)]
+\item This is a training-time attack. It is conducted during the retraining phases of the ML model.
+
+\item The attack falls under the ``Integrity of the model'' category. It is making the model behave in unintended ways, and it adversarially modifies the model in doing so.
+
+\item This is because Robinson's method (the method SpamBayes uses) assumes that the presence or absence of tokens in an email affect its spam status independently. The immediate implication of this is: if you add enough spam words in a valid mail, that mail will be scored as a spam eventually. That is why this attack works.
+
+\item With the above observation, each words becomes a weapon on their own, and each word itself contributes to the spam score of a mail. So with this in mind, they first contaminate the model with valid words treated as spam, and actual valid mails that contain these words will as a result have higher spam score.
+
+\item The idea is simple: our attack emails cause negative impact on the performance, thus if we reject mails that cause negative impact, it is likely that the rejected emails were attack emails.
+
+\item The thresholds mentioned here are $\Phi_1$ and $\Phi_2$. These are used in the spam scoring: $[0, \Phi_0]$ means \textit{ham}, $(\Phi_0, \Phi_1]$ means \textit{unsure} and $(\Phi_1, 1]$ means \textit{spam}. Normally, these are determined by the user, or some default value. With the dynamic threshold defense, these thresholds values are shifted. The idea behind this comes from an observation: the attacks mentioned in the paper increase the spam score of both ham and spam mails. So by shifting the thresholds, we can expect to defend against such attacks.
+
+\item In section 5.1, they mention that for the dictionary attacks, an attack message causes at least an average decrease of 6.8 has-as-ham messages. Whereas, non-attack spam messages cause at most an average decrease of 4.4 ham-as-ham messages. So there is a very clear line between these two. In particular, the attack message average decrease may be an outlier, compared to non-attack messages. By doing outlier analysis on this metric, we may be able to defend against dictionary attacks.
+\end{enumerate}
+
+\textbf{Answer 2:} 
+\begin{enumerate}[label=(\alph*)]
+\item Transferability is done in a black-box attack, where the adversary only has an oracle access to obtain labels on a data, but nothing else (especially regarding the internal architecture of ML model).
+
+The idea is: ``samples crafted to mislead a model A are likely to mislead a model B''. Notice how if A is white-box but B is black-box, I can still mislead the black-box model, which mallicious data I had crafted for A. This is called the \textbf{transferability} property of adversarial examples.
+
+\item In cross training data transferability, you partition your training data, and for each of them you craft adversarial examples, and see how misleading they are on the same type of model that were trained on other partitions of the data. It turns out that indeed, the misleading can be observed.
+
+In cross technique transferability, you craft adversarial examples with some model and data, and see how misleading they are on other types of models trained on the same data.
+
+So the major difference is: in cross training data transferability you are working with the same type of model, for example both the source and target models are same type (DNN, DT, SVM etc.), however in cross technique data your source and target models can be different. In particular, you could have an ensemble of models as target, where the ensemble looks at a majority vote during decision making.
+
+\item They query the online blackbox ML model and with their responses, they generate synthetic data on their local model. Once the local model reaches a certain accuracy, they can use these synthetic data to actually craft adversarial examples to mislead the online model. Basically, the lack of training data is solved by synthetic data generation, and the lack of model is solved by transferability.
+
+\item It does help to some extent, but still it is not as robust as single models such as Deep Neural Networks or k-Nearest Neighbor. He shows the results of percentage of misclassified data, in particular at around minute 11. 
+
+\item Better understanding adversarial examples help us trust our ML model. For example, we can gain more trust on how an autonomous driving car can behave on unexpected and untrained data in the real world. Another example is that, on a ML model trained to tell us how well drugs perform for some disease, we can backpropagate it to perhaps create a synthetic drug that works better than all of them. However, this drug may actually be adversarial: it performs good on the model but is actually unhealthy. Understading and defending against adversarial examples will help us overcome these problems.
+\end{enumerate}
+
+
+\textbf{Answer 3:}
+\begin{enumerate}[label=(\alph*)]
+\item This is a test-time attack. It is conducted on an already trained model.
+
+\item The attack falls under ``Integrity of the Model'' category. Notice that there is no access to training data, and it is a white-box attack as in they have access to the ML model and the test data. Furthermore, they want to create new adversarial examples as test data, to mislead the ML model. 
+
+\item Consider an input $x$. An untargeted adversarial example is an input $x'$ such that $x$ and $x'$ are ``hard to distinguish from one another'' but the ML model assigns them different labels. In the targeted case, again we have such $x'$, but now we want the ML model to assign $x'$ to a label of our choice, i.e a target label. For example, consider an audio sounds like: \textit{firetruck} and the correct label is indeed \textit{firetruck}. An untargeted adversarial example would be an audio that sounds like \textit{firetruck} again, but perhaps labeled as \textit{fired rock}. A targeted adversarial example could have any label, say \textit{cheeseburger} but still somehow sound like \textit{firetruck}.
+
+\item They measure the amount of perturbation in audio adversarial examples using Decibels. More formally, when an audio $x$ is perturbed with $\delta$, they measure the perturbation as $dB(\delta)-dB(x)$ where $dB$ measure the decibels of the audio. The perturbation is hard to notice by human ear, if this measured decibels are low, which means it is quiet.
+
+\item In seciton 3-B, they basically use a linear programming method, where they try to obtain a perturbed audio with the minimum perturbation, but is classified with a target label by the ML model. In section 3-C they further improve their loss function, especially with regards to the audio domain, as many prior work seems to be on image domain. To hide speech, they give the target label as a sequence of space characters.
+
+\item \begin{itemize}
+	\item \textbf{Adversarial Training}: The ML model can be trained with some adversarial examples. Given the fact that these are all generated optimally, I think this may work to some extent. However, what if the adversary generates new audio from the tests of this more robust ML model? I think there is still a little bit of room for attack here.
+	\item \textbf{Denoising}: I am not sure how well this would work against the attack, given the very low decibels of the perturbation, however if it can perhaps nullify the perturbations then it could prevent attacks. But I am pretty sure the attack will not be prevented by this one, the perturbations are very very small.
+	\item \textbf{Ensemble Learning}: Several different ML models can be trained, that have several similar audio inputs that map to same target. The adversarial example will be crafted from a single test instace, and though it my fool the ML model that trained on the particular instance, other ML models can detect the problem, and given enough ML models the majority vote can recover from the attack.
+			
+\end{itemize}
+
+\end{enumerate}
+
+\newpage
+\textbf{Answer 4:} 
+\begin{enumerate}[label=(\alph*)]
+\item fds
+
+\item fds
+
+\item  fdsf
+
+\item fdsf
+
+\item fdsf
+
+\end{enumerate}
+
+
+
+
+
+
+\end{document}

@@ -1,0 +1,238 @@
+\documentclass[12pt,reqno]{amsart}
+
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{proof}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{courier}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    hidelinks=true
+}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\tiny, columns=fullflexible, language=Python, morekeywords={logical_and, log, exp, dot, sqrt, ones, identity}}
+\definecolor{mySucces}{RGB}{40, 167, 69}
+\definecolor{myFail}{RGB}{220, 53, 69}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\st}[0]{\text{ s.t. }}
+\newcommand{\where}[0]{\text{ where }}
+\newcommand{\mand}[0]{\text{ and }}
+\newcommand{\msgspc}[0]{\mathcal{M}}
+\newcommand{\cphspc}[0]{\mathcal{C}}
+\newcommand{\keyspc}[0]{\mathcal{K}}
+\newcommand{\correctans}[0]{\colorbox{mySucces}{CORRECT}}
+\newcommand{\falseans}[0]{\colorbox{myFail}{FALSE}}
+\newcommand\MyBox[2]{
+  \fbox{\lower0.75cm
+    \vbox to 1.7cm{\vfil
+      \hbox to 1.7cm{\hfil\parbox{1.4cm}{#1\\#2}\hfil}
+      \vfil}%
+  }%
+}
+\graphicspath{ {./} }
+
+\begin{document}
+
+\begin{center}
+\large\textbf{Homework 2 \\ COMP543 Fall 2020 - Modern Cryptography \\}
+\normalsize\textbf{ Erhan Tezcan 0070881 \\ 15.10.2020} \\
+\end{center}
+
+\begin{center}
+\line(1,0){250}
+\end{center}
+
+%
+%\begin{enumerate}[label=\alph*]
+% \item Explain input, output, and the purpose of each algorithm (Key Generation, Encryption, Decryption). 
+% \item What are the key space, the message space, and the ciphertext space?
+% \item Formally define the   correctness   requirement of an encryption scheme.
+% \end{enumerate}
+%
+
+\section{Quesitons}
+
+\textbf{Q1:} What does it mean to be secure against an unbounded adversary? Alternatively, what do you understand when one says perfect secrecy? Does what you understand match what the one time pad provides? Why or why not?
+
+\textbf{A1:} Being secure against an unbounded adversary means that the algorithm is secure against an adversary that has infinite computational power and unlimited time. This security is also known as ``unconditional security''. Perfect secrecy is when the chances of guessing the message apriori is \textbf{perfectly} equal to the aposteriori probability. The emphasis on perfect here is due to the mathematical equivalence being without a margin of error. Even with the unlimited powers of the adversary, the fact that plaintext remains secret makes it sensible to use the word perfect too. OTP (One Time Pad) provides this, albeit it's drawbacks. In fact, in a private key scheme with perfect requirements, OTP is the optimal perfectly-secret scheme, also proven by Shannon's theory: $|\keyspc|=|\msgspc|=|\cphspc|$.
+
+\vspace{20px}
+\textbf{Q2:} What are some advantages and disadvantages of the one time pad? Why don't we use one time pad everywhere? Why do we need more research on cryptography?
+
+\textbf{A2:} One Time Pad has several drawbacks. The immediately obvious one is the requirement of key length being at least equal to the message length. This is especially cumbersome if the message size is unbounded (not known apriori), and thus if parties decide to use a key they immediately bound their message length, which is not practical. Another case is the fact that this key is used only once -hence One Time-, as using a key more than once breaks perfect secrecy. Another problem is when the adversary is an ``active attacker'', i.e. the adversary can change the content of ciphertext. The receiver will be unable to obtain exactly the encrypted message in that case. Note that One Time Pad is a perfect cipher. Almost never in real life can we have a representation of perfect. A scheme that can be broken with probability 1 if the adversary works to break it in 500 years, is actually pretty secure! The further research in cryptography therefore approach this problem in terms of ``asymptotic'' or ``concrete'' security. Shannon already proved what is there to be proven regarding perfect schemes, and it was bad news for everyone.
+
+
+
+\vspace{20px}
+\textbf{Q3:} Given any message $m$ and a ciphertext $c$, how many one time pad keys provide  $E_k(m)=c$?  Explain your answer.
+
+\textbf{A3:} In One Time Pad, we have $|\mathcal{K}|=|\mathcal{M}|=|\mathcal{C}|$. When we fix for some message $m$ and ciphertext $c$, we can say $\exists k \in \mathcal{K} \st k = Dec_k(c)=m$. Since OTP is perfectly secret, thus correct:
+$$
+Dec_k(Enc_k(m))=m
+$$
+We see that there is only 1 key that can provide this. If more than one key could provide this correctness for a fixed message, the general correctness would be broken.
+
+\vspace{20px}
+\textbf{Q4:} For the following encryption scheme, state whether the scheme is perfectly secret or not. Justify your answer.
+\begin{itemize}
+\item   The message space is $\mathcal{M} = \{0, \ldots, 4\}$. Algorithm $Gen$ chooses a uniformly random key from the key space $\{0, \ldots, 5\}$. $Enc_k(m)$ returns $[(   k + m   )   \bmod 5]$,   and   $Dec_k (c)$   returns   $[(c-k) \bmod 5]$.
+\end{itemize}
+
+\textbf{A4:} This scheme is not perfectly secret.
+\begin{proof}
+Assume this scheme is perfectly secret. Fix a cyphertext $c$. Given $k_1=0$ and $k_2=5$, there exists a message $m$ such that $c=Enc_{k_1}(m)=Enc_{k_2}(m)$. Let there be another message $m' = m + 1 \bmod |\mathcal{M}| = (m+1) \bmod 5$. Let there be keys $k_1'$ and $k_2'$ such that $Enc_{k_1'}(m)=Enc_{k_2'}(m)=c$, which was our fixed ciphertext. To ensure this, we must compensate the plus 1 by decrementing the keys: $k_1'=k_1-1$ and $k_2'=k_2-1$. We get $k_1'=1-1 \bmod 6 = 5$, and $k_2'=5-1 \bmod 6 = 4$. Looking at the encryption function we see that:
+$$
+Enc_{k_1'}(m')=[(5+m') \bmod 5] \ne Enc_{k_2'}(m') = [(4 + m') \bmod 5]
+$$
+As a result: $Pr[C=c|M=m] \ne Pr[C=c|M=m']$, which breaks perfect indistinguishability, and therefore the perfect secrecy.
+\end{proof}
+
+\vspace{20px}
+\textbf{Q5:}   For the following encryption scheme, state whether the scheme is perfectly secret  or  not. Justify your answer.
+\begin{itemize}
+\item The message space is $M = \{m \in \{0, 1\}^{\lambda} |  \text{ the last bit of $m$ is 0}\}$. $Gen$ chooses a uniform key from $\{0, 1\}^{\lambda-1}$. $Enc_k(m)$ returns the ciphertext as $[m \oplus (k || 0) ]$, and $Dec_k(c)$ returns the plaintext as     $[c \oplus (k||0)]$. 
+\end{itemize}
+\textbf{A5:} (Here $s_1||s_2$ denotes a concatenation of strings, see ``Index of Common Notation''.)Our message space can be thought of $M'= \{m \in \{0, 1\}^{\lambda-1}$ where every message $m = m'||0$ and $m' \in M'$. So informally, a message of length $\lambda-1$ ending with the bit 0. Our keys are also of $\lambda-1$ randomly, and concatenated with 0. The $Enc$ and $Dec$ functions are in essence the same of One Time Pad, so actually this is just One Time Pad with the message and key ending in 0. As a result, this is perfectly secret.
+
+\vspace{20px}
+\textbf{Q6:} Using OTP, Alice   and   Bob   agreed   on   a   perfectly   random   key,  and that Alice will send Bob the answer to the question : ``Are you taking Comp443/543'' as either Y   or N encoded using string-to-bits:
+$$
+Y \xrightarrow{} 1011001
+$$
+$$
+N \xrightarrow{} 1001110
+$$
+Charlie knows nothing about the message or the key but intercepts the transmission: $1001110$. 
+
+What should Charlie send to Bob so that Bob thinks the opposite of Alice’s answer?
+(If Alice indeed sent Y, Bob receives N. If Alice indeed sent N, Bob receives Y.)
+
+\textbf{A6:} The adversary is defined to know the scheme and that $|\mathcal{M}|=\{Y,N\}|$. The intercepted transmission is a ciphertext $c=k \oplus m_c$ where $k\in \mathcal{K}, m_c \in \mathcal{M}$. Let us represent the message space as $\mathcal{M}=\{m, m'\}$ without necessarily forcing any of these to equal Y or N. The adversary should do as follows:
+$$
+tmp_1 = c \oplus m \mand tmp_2 = c \oplus m'
+$$
+$$
+tmp_1 = k \oplus m_c \oplus m \mand tmp_2 = k \oplus m_c \oplus m'
+$$
+Let us assume without loss of generality, that $m_c = m$.
+$$
+tmp_1 = k \oplus m \oplus m \mand tmp_2 = k \oplus m \oplus m'
+$$
+$$
+tmp_1 = k \mand tmp_2 = k \oplus m \oplus m'
+$$
+At this point, the adversary knows that one of these hold the key, to find out which:
+$$
+c_{tmp_1,m} = tmp_1 \oplus m
+$$
+$$
+c_{tmp_1,m'} = tmp_1 \oplus m'
+$$
+$$
+c_{tmp_2,m} = tmp_2 \oplus m
+$$
+$$
+c_{tmp_2,m'} = tmp_2 \oplus m'
+$$
+The adversary will then compare these 4 results to find the one that equals to $c$. Again, without loss of generality, let us say $c_{tmp_1,m} = c$. Then, the adversary can infer that the key is $tmp_1$ and Alice sent the message $m$. So, the adversary can create a new ciphertext by using the same key but the other message: $c' = Enc_k(m')$. This $c'$ should hold the opposite information. The adversary will forward $c'$ to Bob, and the mission will be complete!
+
+\section{Exercises}
+
+\textbf{E1\footnote{KL Ed.2 Ch.2 Exc. 2.1}}:  Prove that, by redefining the key space, we may assume that the keygeneration algorithm Gen chooses a key uniformly at random from the key space, without changing $Pr[C = c | M = m]$ for any $m, c$.
+
+\textbf{A1}:  
+
+\vspace{20px}
+\textbf{E2\footnote{KL Ed.2 Ch.2 Exc. 2.2}}:  Prove that, by redefining the key space, we may assume that Enc is deterministic without changing $Pr[C = c | M = m]$ for any $m, c$.
+
+\textbf{A2}:  
+
+\vspace{20px}
+\textbf{E3\footnote{KL Ed.2 Ch.2 Exc. 2.3}}:  Prove or refute: An encryption scheme with message space $\msgspc$ is perfectly secret if and only if for every probability distribution over M and every c0, c1 2 C we have Pr[C = c0] = Pr[C = c1].
+
+\textbf{A3}:  
+
+
+\vspace{20px}
+\textbf{E4\footnote{KL Ed.2 Ch.2 Exc. 2.5}}:  Prove Lemma 2.6. ``Encryption scheme $\Pi$ is perfectly secret if and only if it is perfectly indistinguishable.''
+
+\textbf{A4}:  
+
+\vspace{20px}
+\textbf{E5\footnote{KL Ed.2 Ch.2 Exc. 2.6}}:  Same as \textbf{Q4} and \textbf{Q5}.
+
+\textbf{A5}:  Same as \textbf{Q4} and \textbf{Q5}.
+
+\vspace{20px}
+\textbf{E6\footnote{KL Ed.2 Ch.2 Exc. 2.7}}:  When using the one-time pad with the key $k = 0^l$, we have $Enc_k(m) = k \oplus m = m$ and the message is sent in the clear! It has therefore been
+suggested to modify the one-time pad by only encrypting with $k \ne 0^l$ (i.e., to have Gen choose k uniformly from the set of nonzero keys of length $l$). Is this modified scheme still perfectly secret? Explain.
+
+\textbf{A6}:  
+
+\vspace{20px}
+\textbf{E7\footnote{KL Ed.2 Ch.2 Exc. 2.8}}:  Let $\Pi$ denote the Vigenere cipher where the message space consists of all 3-character strings (over the English alphabet), and the key is generated by first choosing the period $t$ uniformly from $\{1, 2, 3\}$ and then letting the key be a uniform string of length $t$.
+\begin{enumerate}[label=\alph*]
+\item Define $\mathcal{A}$ as follows: $\mathcal{A}$ outputs $m_0 = \code{aab}$ and $m_1 = \code{abb}$. When given a ciphertext $c$, it outputs 0 if the first character of $c$ is the same as the second character of $c$, and outputs 1 otherwise. Compute $Pr[PrivK^{eav}_{\mathcal{A},\Pi}=1]$.
+\item Construct and analyze an adversary $\mathcal{A}$ for which $Pr[PrivK^{eav}_{\mathcal{A},\Pi}=1]$ is greater than your answer from part (a).
+\end{enumerate}
+
+\textbf{A7}:  
+
+\vspace{20px}
+\textbf{E8\footnote{KL Ed.2 Ch.2 Exc. 2.9}}:   In this exercise, we look at different conditions under which the shift, mono-alphabetic substitution, and Vigenere ciphers are perfectly secret:
+\begin{enumerate}[label=\alph*]
+\item  Prove that if only a single character is encrypted, then the shift cipher is perfectly secret.
+\item What is the largest message space $\msgspc$ for which the mono-alphabetic substitution cipher provides perfect secrecy?
+\item Prove that the Vigenere cipher using (fixed) period t is perfectly secret when used to encrypt messages of length $t$.
+\end{enumerate}
+
+\textbf{A8}:  
+
+\vspace{20px}
+\textbf{E9\footnote{KL Ed.2 Ch.2 Exc. 2.10}}:  Prove that a scheme satisfying Definition 2.5 must have $|K| \geq |M|$ without using Lemma 2.4. Specifically, let $\Pi$ be an arbitrary encryption scheme with $|K| < |M|$. Show an $\mathcal{A}$ for which $Pr[PrivK^{eav}_{\mathcal{A},\Pi}=1] > \frac{1}{2}$. 
+
+\textbf{Hint}: \textit{It may be easier to let $\mathcal{A}$ be randomized}.
+
+
+\textbf{A9}:  
+
+\vspace{20px}
+\textbf{E10\footnote{KL Ed.2 Ch.2 Exc. 2.11}}:  Assume we require only that an encryption scheme (Gen,  Enc, Dec) with message space $\msgspc$ satisfy the following: For all $m \in \msgspc$, we have $Pr[Dec_K(Enc_K(m)) = m] \geq 2^{-t}$. (This probability is taken over choice of the key as well as any randomness used during encryption.) Show that perfect secrecy can be achieved with $|\keyspc| < |\msgspc|$ when $t \geq 1$. Prove a lower bound on the size of $\keyspc$ in terms of $t$.
+
+\textbf{A10}:  
+
+\vspace{20px}
+\textbf{E11\footnote{KL Ed.2 Ch.2 Exc. 2.12}}:  Let $\epsilon \geq 0$ be a constant. Say an encryption scheme is $\epsilon$-perfectly secret if for every adversary $\mathcal{A}$ it holds that:
+$$
+Pr[PrivK^{eav}_{\mathcal{A},\Pi}=1] \leq \frac{1}{2} + \epsilon
+$$
+(Compare to Definition 2.5.) Show that $\epsilon$-perfect secrecy can be achieved with  $|\keyspc| < |\msgspc|$ when $\epsilon > 0$. Prove a lower bound on the size of $K$ in terms of $\epsilon$.
+
+\textbf{A11}:  
+
+\vspace{20px}
+\textbf{E12\footnote{KL Ed.2 Ch.2 Exc. 2.13}}:  In this problem we consider definitions of perfect secrecy for the encryptionof two messages (using the same key). Here we consider distributions over pairs of messages from the message space $\msgspc$; we let $M_1,M_2$ be random variables denoting the first and second message, respectively. (We stress that these random variables are not assumed to be independent.) We generate a (single) key $k$, sample a pair of messages $(m_1,m_2)$ according to the given distribution, and then compute ciphertexts $c1 \xleftarrow{} Enc_k(m_1)$ and $c2  \xleftarrow{}  Enc_k(m_2)$; this induces a distribution over pairs of ciphertexts and we let $C_1,C_2$ be the corresponding random variables.
+
+\begin{enumerate}[label=\alph*]
+\item Say encryption scheme (Gen, Enc,Dec) is perfectly secret for two messages if for all distributions over $\msgspc\times \msgspc$ , all $m_1,m_2 \in \msgspc$, and all ciphertexts $c_1, c_2 \in \cphspc$ with $Pr[C_1 = c_1 \wedge  C_2 = c_2] > 0$:
+$$
+Pr [M_1 = m_1 \wedge M_2 = m_2 | C_1 = c_1 \wedge C_2 = c_2]= Pr[M_1 = m_1 \wedge M_2 = m_2].
+$$
+Prove that no encryption scheme can satisfy this definition.
+
+
+\item Say encryption scheme (Gen, Enc,Dec) is perfectly secret for two distinct messages if for all distributions over $\msgspc\times \msgspc$ where the first and second messages are guaranteed to be different (i.e., distributions over pairs of distinct messages), all $m_1,m_2 \in \msgspc$, and all ciphertexts $c_1, c_2 \in \cphspc$ with $Pr[C_1 = c_1 \wedge  C_2 = c_2] > 0$:
+$$
+Pr [M_1 = m_1 \wedge M_2 = m_2 | C_1 = c_1 \wedge C_2 = c_2]= Pr[M_1 = m_1 \wedge M_2 = m_2].
+$$
+Show an encryption scheme that provably satisfies this definition.
+\end{enumerate}
+\textbf{A12}:  
+
+\end{document}

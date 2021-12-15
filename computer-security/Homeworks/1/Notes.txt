@@ -1,0 +1,1 @@
+While doing homework, S/MIME was enabled by default for sending mail. I had to change that from my account settings in Thunderbird to use OpenPGP instead.

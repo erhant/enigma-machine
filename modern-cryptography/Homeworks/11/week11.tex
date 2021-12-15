@@ -1,0 +1,164 @@
+\documentclass[12pt,reqno]{amsart}
+
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{proof}
+\usepackage{centernot}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{courier}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{algorithmic}
+\usepackage{textcomp}
+\usepackage{algorithm}
+\usepackage{cite}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\tiny, columns=fullflexible, language=Python, morekeywords={logical_and, log, exp, dot, sqrt, ones, identity}}
+\definecolor{mySucces}{RGB}{40, 167, 69}
+\definecolor{myFail}{RGB}{220, 53, 69}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\st}[0]{\text{ s.t. }}
+\newcommand{\where}[0]{\text{ where }}
+\newcommand{\mand}[0]{\text{ and }}
+\newcommand{\msgspc}[0]{\mathcal{M}}
+\newcommand{\cphspc}[0]{\mathcal{C}}
+\newcommand{\keyspc}[0]{\mathcal{K}}
+\newcommand{\advrs}[0]{\mathcal{A}}
+\newcommand{\distin}[0]{\mathcal{D}}
+\newcommand{\oracle}[0]{\mathcal{O}}
+\newcommand{\correctans}[0]{\colorbox{mySucces}{CORRECT}}
+\newcommand{\falseans}[0]{\colorbox{myFail}{FALSE}}
+\newcommand\MyBox[2]{
+  \fbox{\lower0.75cm
+    \vbox to 1.7cm{\vfil
+      \hbox to 1.7cm{\hfil\parbox{1.4cm}{#1\\#2}\hfil}
+      \vfil}%
+  }%
+}
+\graphicspath{ {./} }
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}    
+
+\begin{document}
+
+\begin{center}
+\large\textbf{Homework 11 \\ COMP543 Fall 2020 - Modern Cryptography \\}
+\normalsize\textbf{ Erhan Tezcan 0070881 \\ 19.12.2020} \\
+\end{center}
+
+\begin{center}
+\line(1,0){250}
+\end{center}
+
+%
+%\begin{enumerate}[label=\alph*.]
+% \item Explain input, output, and the purpose of each algorithm (Key Generation, Encryption, Decryption). 
+% \item What are the key space, the message space, and the ciphertext space?
+% \item Formally define the   correctness   requirement of an encryption scheme.
+% \end{enumerate}
+%
+
+%
+%\begin{algorithm}
+%\caption{\code{DivideRounds} for a new event \code{x}}
+%\label{alg:round}
+%\begin{algorithmic}
+%\STATE $r \gets \text{max}(selfParent.Round, otherParent.Round)$
+%\IF {$x \text{ strongly sees } > \frac{2n}{3} \text{ round } r \text{ witnesses}$} 
+%        \STATE $x.Round \gets r+1$
+%\ELSE
+%        \STATE $x.Round \gets r$
+%\ENDIF 
+%\STATE $x.witness \gets x.Round > x.selfParent.Round$
+%\end{algorithmic}
+%\end{algorithm}
+%
+
+\section{Quesitons}
+\textbf{Q1:} A (digital) signature scheme consists of three probabilistic polynomial-time algorithms (Gen, Sign, Vrfy). Explain each algorithm with its input and output.
+
+\textbf{A1:} These 3 algorithms are:
+\begin{itemize}
+	\item $Gen$: on input a security parameter $1^n$, outputs public key $pk$ and secret key $sk$.
+	\item $Sign$: on input a private key $sk$ and a message $m$, outputs a signature $\sigma$.
+	\item $Vrfy$: on input a public key $pk$, message $m$ and a signature $\sigma$, outputs 1 or 0.
+\end{itemize}
+
+\vspace{20px}
+\textbf{Q2:} Compare signature schemes with MAC schemes.
+
+\textbf{A2:} 
+For MACs:
+\begin{itemize}
+	\item Only the holder of the key can verify it.
+	\item You can't transfer a MAC to some other party.
+	\item Does not have non-repudiation.
+	\item Shorter in length and faster to compute.
+\end{itemize}
+
+For Digital Signatures:
+\begin{itemize}
+	\item Anyone can verify it (with the public key).
+	\item You can transfer the signature to some other party.
+	\item Has non-repudiation.
+	\item Longer keys than MAC, slower to compute.
+\end{itemize}
+
+\vspace{20px}
+\textbf{Q3:} Formally define security (existential unforgeability against adaptive chosen message attacks) of a signature scheme.
+
+\textbf{A3:} The $\code{Sig-Forge}_{\advrs,\Pi}(n)$ experiment is defined in the algorithm 1 below.
+\begin{algorithm}
+\caption{$\code{Sig-Forge}_{\advrs,\Pi}(n)$ experiment}
+\begin{algorithmic}
+\STATE \code{Chal} generates a public and private key pair $(pk, sk) \gets Gen(1^n)$.
+\STATE $\advrs$ obtains $pk$, and is given oracle access to $Sign(.)$. It can send a message $m'$ and it will have in return $\sigma'=Sign_{sk}(m')$.
+\STATE After some time, $\advrs$ send $m, \sigma$ to \code{Chal}, where $m$ has not been used in oracle access before.
+\IF{$Vrfy_{pk}(m, \sigma) = 1$}
+	\STATE output 1, $\advrs$ wins.
+\ELSE
+	\STATE output 0.
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\vspace{20px}
+\textbf{Q4:} Let $\Pi$ be a secure signature scheme for messages of fixed length $l$. Construct a signature scheme based on $\Pi$ that is secure for arbitrary-length messages. You can make use of any crypto-primitive you have learned. (No security proof is needed.)
+
+\textbf{A4:} This is known as Hash-and-Sign paradigm. Let $\Pi$ be $(Gen, Sign, Vrfy)$, we will construct $\Pi'$.
+\begin{itemize}
+	\item $Gen'$: Same as $Gen$.
+	\item $Sign$: on input a private key $sk$ and a message $m$, outputs a $Sign_{sk}(H(m))$.
+	\item $Vrfy$: on input a public key $pk$, message $m$ and a signature $\sigma$, outputs $Vrfy_{pk}(H(m),\sigma)$.
+\end{itemize}
+Here $H$ is a collision resistant hash function. 
+
+\vspace{20px}
+\textbf{Q5:} Assume Charlie, acting as a certificate authority (CA), issues a certificate for Bob. Charlie’s signature public key is $pk_C$ and he always issues certificates only to the trustworthy people. Assume further that Bob’s key $pk_B$ is a public key for a signature scheme. Charlie’s certificate for Bob looks like $cert_{C\rightarrow B} = Sign_{sk_C}(\text{Bob’s key is }pk_B)$.
+Bob issues a certificate for Alice of the form $cert_{B \rightarrow A} = Sign_{sk_B}(\text{Alice’s key is }pk_A)$.
+Now, Alice wants to communicate with some fourth party Dave who knows Charlie’s public key $pk_C$ (but not Bob’s). Assume Charlie is offline now. Suggest a solution by which Alice can convince Dave that $pk_A$ is her authentic key, without any party having access to Charlie (since Charlie is offline).
+
+\textbf{A5:} Alice sends $\langle \textrm{Alice}, pk_A, cert_{B \to A} \rangle$ to Dave. Dave can then ask Bob for $cert_{C \to B}$, which Dave can verify with $pk_C$. After that verification, Dave knows that $B$ must be trustworthy because $C$ issued a certificate to it. Furthermore, it can trust $pk_B$ and use this $pk_B$ to verify $cert_{B \to A}$, which reveals that $pk_A$ is the correct public key of Alice.
+\end{document}

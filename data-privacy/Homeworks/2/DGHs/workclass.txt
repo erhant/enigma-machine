@@ -1,0 +1,12 @@
+Any
+	Government
+		State-gov
+		Local-gov
+		Federal-gov
+	Private
+	Self-employed
+		Self-emp-not-inc			
+		Self-emp-inc
+	Unemployed
+		Without-pay
+		Never-worked

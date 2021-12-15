@@ -1,0 +1,152 @@
+\documentclass[12pt,reqno]{amsart}
+
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{proof}
+\usepackage{centernot}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{courier}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{algorithmic}
+\usepackage{textcomp}
+\usepackage{algorithm}
+\usepackage{cite}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\tiny, columns=fullflexible, language=Python, morekeywords={logical_and, log, exp, dot, sqrt, ones, identity}}
+\definecolor{mySucces}{RGB}{40, 167, 69}
+\definecolor{myFail}{RGB}{220, 53, 69}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\st}[0]{\text{ s.t. }}
+\newcommand{\pr}[0]{\text{Pr}}
+\newcommand{\wins}[0]{\text{ wins}}
+\newcommand{\where}[0]{\text{ where }}
+\newcommand{\mand}[0]{\text{ and }}
+\newcommand{\msgspc}[0]{\mathcal{M}}
+\newcommand{\cphspc}[0]{\mathcal{C}}
+\newcommand{\keyspc}[0]{\mathcal{K}}
+\newcommand{\advrs}[0]{\mathcal{A}}
+\newcommand{\distin}[0]{\mathcal{D}}
+\newcommand{\oracle}[0]{\mathcal{O}}
+\newcommand{\correctans}[0]{\colorbox{mySucces}{CORRECT}}
+\newcommand{\falseans}[0]{\colorbox{myFail}{FALSE}}
+\newcommand\MyBox[2]{
+  \fbox{\lower0.75cm
+    \vbox to 1.7cm{\vfil
+      \hbox to 1.7cm{\hfil\parbox{1.4cm}{#1\\#2}\hfil}
+      \vfil}%
+  }%
+}
+\graphicspath{ {./} }
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}    
+
+\begin{document}
+
+\begin{center}
+\large\textbf{Homework 9 \\ COMP543 Fall 2020 - Modern Cryptography \\}
+\normalsize\textbf{ Erhan Tezcan 0070881 \\ 05.12.2020} \\
+\end{center}
+
+\begin{center}
+\line(1,0){250}
+\end{center}
+
+%
+%\begin{enumerate}[label=\alph*.]
+% \item Explain input, output, and the purpose of each algorithm (Key Generation, Encryption, Decryption). 
+% \item What are the key space, the message space, and the ciphertext space?
+% \item Formally define the   correctness   requirement of an encryption scheme.
+% \end{enumerate}
+%
+
+%
+%\begin{algorithm}
+%\caption{\code{DivideRounds} for a new event \code{x}}
+%\label{alg:round}
+%\begin{algorithmic}
+%\STATE $r \gets \text{max}(selfParent.Round, otherParent.Round)$
+%\IF {$x \text{ strongly sees } > \frac{2n}{3} \text{ round } r \text{ witnesses}$} 
+%        \STATE $x.Round \gets r+1$
+%\ELSE
+%        \STATE $x.Round \gets r$
+%\ENDIF 
+%\STATE $x.witness \gets x.Round > x.selfParent.Round$
+%\end{algorithmic}
+%\end{algorithm}
+%
+\section{Quesitons}
+\textbf{Q1:} Why is key distribution a problem? How can we share keys with friends in the crypto class? How many keys would each of us need to keep to be able to securely communicate with each other in the class? How many keys would be needed in total?
+
+\textbf{A1:} In the schemes we have seen so far, the private keys existed on both sender and the receiver. In practice, how would this be realized in the first place? Even if it was possible, for $N$ parties, each party would need to store on the order of $O(N)$ keys! The initial sharing can happen by literally meeting beforehand and handing the key, or in another case use a trusted third-party, which in this case might be Alptekin hoca. In that case he would store $N$ keys, and we would obtain the key we need to communicate with our friends by first querying it securely from Alptekin hoca.
+
+\vspace{20px}
+\textbf{Q2:} How can I share a key with my friend living in Australia?
+
+\textbf{A2:} You can:
+\begin{itemize}
+	\item Go to Australia and hand the key to your friend.
+	\item Your friend can come here and obtain the key.
+	\item If you are both a member of a Key-Distribution Center, you can obtain your keys from there.
+	\item You can refer to a Certificate Authority, and do a Diffie-Hellman Key Exchange.
+\end{itemize}
+
+\vspace{20px}
+\textbf{Q3:} Are there any trusted third parties in the world, that are used today? Provide multiple examples. Discuss the trust put on those parties, and the possible amount of damage if they misbehave.
+
+\textbf{A3:} How to arrange for TTP is actually unsolved. There may be certificate authorities (CA) for this purpose. An example is DigiNotar (now defunct). There are also free non-profit CA's such as CAcert and Let's Encrypt. The biggest CA is IdenTrust. If the CA can be broken or subverted, the security is completely lost. Impersonation attacks may becomes possible. An example is with VeriSign CA, that issued two certificates to a person claiming to be Microsoft. Later in 2011 Comodo and DigiNotar was compromised by Iranian hackers.
+
+\vspace{20px}
+\textbf{Q4:} Describe a man-in-the-middle attack. Why is the Diffie-Hellman protocol insecure against a man-in-the-middle attack? Talk about some other protocols insecure against a man-in-the-middle attack. Also discuss some measures that can be employed to make the Diffie-Hellman protocol resistant to a man-in-the-middle attack.
+
+\textbf{A4:} An example is when the adversary is doing an attack-in-the-middle by changing $y_A$ to 1 and $y_B$ to 1. This way, both parties will agree on a key, but the keys are known anyways, they will be 1. Another attack is when the attacker impersonates both parties and runs the protocol with both of them, therefore knows the key. Then, the attacker will stay in the middle and forward the messages in between by decrypting and encrypting and so on. 
+
+To avoid this, we might need a certificate authority, or again some kind of trusted third party, which provide a secure channel for the parties to execute the protocol over.
+
+\vspace{20px}
+\textbf{Q5:} Consider the following key-exchange protocol:
+\begin{enumerate}[label=\alph*.]
+\item Alice chooses uniform $k, r \in \{0,1\}^n$, and sends $s := k \oplus r$ to Bob.
+\item Bob chooses uniform $t \in \{0,1\}^n$, and sends $u := s \oplus t$ to Alice.
+\item Alice computes $w := u \oplus r$ and sends $w$ to Bob.
+\item Alice outputs $k$ and Bob outputs $w \oplus t$.
+\end{enumerate}
+Show that Alice and Bob output the same key. Analyze the security of the scheme (i.e., either prove its security or show a concrete attack).
+
+\textbf{A5:}  For every ranodm bit-string $a$, I will also denote the party that it was created at, for example Alice chooses $a \in \{0, 1\}^n$ will be $a_A$.
+\begin{itemize}
+	\item $s_A = k_A \oplus r_A$
+	\item $u_B = s_A \oplus t_B = k_A \oplus r_A \oplus t_B$
+	\item $w_A = u_B \oplus r_A = k_A \oplus r_A \oplus t_B \oplus r_A$
+	\item Alice outputs: $k_A$.
+	\item Bob outputs: $w_A \oplus t_B = k_A \oplus r_A \oplus t_B \oplus r_A \oplus t_B = k_A$
+\end{itemize}
+It is thus shown that they both output the same key $k_A$.
+
+To show the security, let us check the key-exchange experiment. The transcript is: $(s_A, u_B, w_A)$ and the common key is $k_A$. A bit is chosen $b \gets \{0, 1\}$ and if $b=0$ then $k' = k$, otherwise $k` \gets \{0, 1\}$. An adversary $\advrs$ is given the transcript $(s_A, u_B, w_A)$ and $k'$. Then it outputs $b' \in \{0, 1\}$. The probabilitiy that $b' = b$ should be negligible in the security parameter for all PPT adversaries $\advrs$. 
+
+We will not show an adversary that can win this game: $\advrs$ first does $s_A \oplus t_B = k_A \oplus r_A \oplus k_A \oplus r_A \oplus t_B$ and obtains $t_B$. Then, it does $w_A \oplus t_B$ and obtains $k_A$. It then check whether $k_A = k'$. If $b=0$ then $\advrs$ wins with 1 probability. If $b=1$, then $\advrs$ wins with $1- \code{negl}(n)$ probability, where the negligible comes from the fact that uniformly chosen $k'$ is actually equal to $k$. As a result, $\pr[\advrs \wins] = 1 - \code{negl}(n)$, therefore this key-exchange protocol is not secure.
+
+\end{document}

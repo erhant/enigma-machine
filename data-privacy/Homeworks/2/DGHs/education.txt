@@ -1,0 +1,26 @@
+Any
+	Without-Post-Secondary 
+		Preschool
+		Elementary
+			1st-4th 
+			5th-6th 
+			7th-8th 
+		Secondary 
+			Junior-Secondary 
+				9th
+				10th 
+			Senior-Secondary 
+				11th 
+				12th 
+				HS-grad 
+	Post-secondary 
+		Some-college
+		Assoc 
+			Assoc-acdm 
+			Assoc-voc 
+		University 
+			Bachelors
+			Prof-school 
+		Post-grad 
+			Masters 
+			Doctorate

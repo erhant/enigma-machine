@@ -1,0 +1,18 @@
+Any 
+	White-collar 
+		Exec-managerial
+		Prof-specialty
+		Sales 
+		Adm-clerical 
+	Blue-collar 
+		Tech-support 
+		Craft-repair 
+		Machine-op-inspct
+		Handlers-cleaners
+		Transport-moving
+		Priv-house-serv
+	Other 
+		Protective-serv 
+		Armed-Forces 
+		Farming-fishing 
+		Other-service

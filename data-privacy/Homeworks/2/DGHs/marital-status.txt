@@ -1,0 +1,11 @@
+Any 
+	Married 
+		Partner-present 
+			Married-civ-spouse 
+			Married-AF-spouse 
+		Partner-absent 
+			Divorced 
+			Separated 
+			Widowed 
+			Married-spouse-absent
+	Never-married

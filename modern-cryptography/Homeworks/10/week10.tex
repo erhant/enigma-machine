@@ -1,0 +1,256 @@
+\documentclass[12pt,reqno]{amsart}
+
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{proof}
+\usepackage{centernot}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{courier}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{algorithmic}
+\usepackage{textcomp}
+\usepackage{algorithm}
+\usepackage{cite}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\tiny, columns=fullflexible, language=Python, morekeywords={logical_and, log, exp, dot, sqrt, ones, identity}}
+\definecolor{mySucces}{RGB}{40, 167, 69}
+\definecolor{myFail}{RGB}{220, 53, 69}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\st}[0]{\text{ s.t. }}
+\newcommand{\where}[0]{\text{ where }}
+\newcommand{\mand}[0]{\text{ and }}
+\newcommand{\msgspc}[0]{\mathcal{M}}
+\newcommand{\cphspc}[0]{\mathcal{C}}
+\newcommand{\keyspc}[0]{\mathcal{K}}
+\newcommand{\advrs}[0]{\mathcal{A}}
+\newcommand{\distin}[0]{\mathcal{D}}
+\newcommand{\oracle}[0]{\mathcal{O}}
+\newcommand{\correctans}[0]{\colorbox{mySucces}{CORRECT}}
+\newcommand{\falseans}[0]{\colorbox{myFail}{FALSE}}
+\newcommand\MyBox[2]{
+  \fbox{\lower0.75cm
+    \vbox to 1.7cm{\vfil
+      \hbox to 1.7cm{\hfil\parbox{1.4cm}{#1\\#2}\hfil}
+      \vfil}%
+  }%
+}
+\graphicspath{ {./} }
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}    
+
+\begin{document}
+
+\begin{center}
+\large\textbf{Homework 10 \\ COMP543 Fall 2020 - Modern Cryptography \\}
+\normalsize\textbf{ Erhan Tezcan 0070881 \\ 12.12.2020} \\
+\end{center}
+
+\begin{center}
+\line(1,0){250}
+\end{center}
+
+%
+%\begin{enumerate}[label=\alph*.]
+% \item Explain input, output, and the purpose of each algorithm (Key Generation, Encryption, Decryption). 
+% \item What are the key space, the message space, and the ciphertext space?
+% \item Formally define the   correctness   requirement of an encryption scheme.
+% \end{enumerate}
+%
+
+%
+%\begin{algorithm}
+%\caption{\code{DivideRounds} for a new event \code{x}}
+%\label{alg:round}
+%\begin{algorithmic}
+%\STATE $r \gets \text{max}(selfParent.Round, otherParent.Round)$
+%\IF {$x \text{ strongly sees } > \frac{2n}{3} \text{ round } r \text{ witnesses}$} 
+%        \STATE $x.Round \gets r+1$
+%\ELSE
+%        \STATE $x.Round \gets r$
+%\ENDIF 
+%\STATE $x.witness \gets x.Round > x.selfParent.Round$
+%\end{algorithmic}
+%\end{algorithm}
+%
+
+\section{Quesitons}
+\textbf{Q1:} Explain semantic security vs. CPA-security for public key encryption schemes.
+
+\textbf{A1:} In private key encryption schemes semantic security and CPA-security are different, but in public key setting they are the same, as the adversary knows about the public key it can make encryption queries itself.
+
+\vspace{20px}
+\textbf{Q2:} Discuss the advantages and disadvantages of public-key encryption systems in comparison to symmetric-key encryption systems. Keep your comparison as detailed as possible, looking from multiple angles.
+
+\textbf{A2:} Public key encryption schemes remove the need of holding the same key on both parties at the start. In other words, the efficiency of key distribution is better in public key cryptography. However, in terms of performance, symmetric key schemes are faster and more efficient. So usually, a key is distributed in public key setting at the start, and then use private key encryption afterwards.
+
+\vspace{20px}
+\textbf{Q3:} Formally define the factoring assumption. Formally define the RSA assumption. Compare them, and explain the relationship between them.
+
+\textbf{A3:} 
+First, let us look at factoring assumption with a game as seen in algorithm 1.
+\begin{algorithm}
+\caption{$\code{Fact}_{\advrs, GenModulus}(n)$ game.}
+\label{alg:1}
+\begin{algorithmic}
+\STATE \code{Chal} computes $(N, p, q) \gets GenModulus(1^n)$.
+\STATE \code{Chal} gives $\advrs$ only $N$.
+\STATE $\advrs$ gives $p'$ and $q'$ to $\code{Chal}$.
+\IF{$N= p'q'$}
+	\STATE $\advrs$ wins
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+It is assumed that for algorithm 1 $\forall$ PPT $\advrs$, $\exists \code{negl}$ s.t. $\textrm{Pr}[\advrs \textrm{ wins }]\leq \code{negl}(n)$.
+
+For the RSA assumption, let us look at algorithm 2.
+\begin{algorithm}
+\caption{$\code{Fact}_{\advrs, GenModulus}(n)$ game.}
+\label{alg:2}
+\begin{algorithmic}
+\STATE \code{Chal} computes $(N, e, d) \gets GenRSA(1^n)$.
+\STATE \code{Chal} chooses $y \gets \mathbb{Z}_N^*$.
+\STATE \code{Chal} gives $N, e, y$ to $\advrs$.
+\STATE $\advrs$ gives $x \in \mathbb{Z}_N^*$ to $\code{Chal}$.
+\IF{$x^e= y$}
+	\STATE $\advrs$ wins
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+It is assumed again that for algorithm 2 $\forall$ PPT $\advrs$, $\exists \code{negl}$ s.t. $\textrm{Pr}[\advrs \textrm{ wins }]\leq \code{negl}(n)$.
+
+They are closely related. In RSA, the attacked knows $N, e$ but not $d$. It also has $c = x^e \bmod N$. Can it find $x$? Well, we may ask: how hard is it to compute $e^\textrm{th}$ roots in modulo $N$? So far, the best known algorithm works in two steps:
+\begin{enumerate}
+\item Factor $N$. (\textit{Hard})
+\item Compute $e^\textrm{th}$ roots in modulo $p$ and $q$. (\textit{Easy})
+\end{enumerate}
+As we can see, we actually are depending the hardness of factoring here!
+
+\vspace{20px}
+\textbf{Q4:} Which standards should be employed when using RSA encryption scheme in practice? What are the proven security guarantees provided by each such standard?
+
+\textbf{A4:} There are few RSA standards:
+\begin{itemize}
+\item \textbf{RSA PKCS v 1.5}: This one is not even CPA-secure! It is broken by the Bleichenbacher attack.
+\item \textbf{RSA-based KEM}: This one is CPA-secure, but not CCA-secure.
+\item \textbf{RSA-OAEP}: This one is actually CCA-secure, and it is the recommended one we should use.
+\end{itemize}
+
+\vspace{20px}
+\textbf{Q5:} What are the recommended minimum and maximum RSA key lengths these days? What is the effect of the key length on security? How should one determine the minimum and maximum key length to employ?
+
+\textbf{A5:} Right now 2048 bits is the recommended key length, and in general between 1000-4000 should be used. Higher key lengths mean more security but less performance. 
+
+\vspace{20px}
+\textbf{Q6:} What is hybrid encryption? Why is it employed in practice? Why is just using public key encryption insufficient?
+
+\textbf{A6:} Since private key encryption is faster, but public key encryption solves the key distribution problem, it is a good idea to use both together, which is what is done in hybrid encryption. Just using public key encryption would be computational demanding, as it is less efficient.
+
+\vspace{20px}
+\textbf{Q7:} What is the underlying security assumption for the ElGamal encryption system? Define it formally. Compare it with the underlying assumption of the Diffie-Hellman key exchange scheme. Which assumption is weaker (meaning that it is more likely to be true)?
+
+\textbf{A7:} ElGamal is based on DDH (Decisional Diffie-Hellman Problem). The DDH can be described as:
+\begin{algorithm}
+\caption{DDH game.}
+\label{alg:3}
+\begin{algorithmic}
+\STATE \code{Chal} computes $(G, q, g) \gets \mathcal{G}(1^n)$.
+\STATE \code{Chal} chooses $x, y, z \gets \mathbb{Z}_q$.
+\STATE \code{Chal} picks a bit $b \gets \{0, 1\}$.
+\STATE \code{Chal} computes $h_1 = g^x$ and $h_2 = g^y$.
+\IF{$b = 1$}
+	\STATE \code{Chal} computes $h' = g^z$.
+\ELSE
+	\STATE \code{Chal} computes $h' = g^{xy}$.
+\ENDIF
+\STATE \code{Chal} gives $h_1, h_2, h'$ to $\advrs$.
+\STATE $\advrs$ returns a bit $b' \in \{0, 1\}$ to \code{Chal}.
+\IF{$b' = b$}
+	\STATE $\advrs$ wins.
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+It is assumed again that for algorithm 3 $\forall$ PPT $\advrs$, $\exists \code{negl}$ s.t. $\textrm{Pr}[\advrs \textrm{ wins }]\leq \code{negl}(n)$.
+
+The Diffie-Hellman key exchange was based on Discrete Logarithm problem, as described in algorithm 4.
+\begin{algorithm}
+\caption{D-Log game.}
+\label{alg:4}
+\begin{algorithmic}
+\STATE \code{Chal} computes $(G, q, g) \gets \mathcal{G}(1^n)$.
+\STATE \code{Chal} chooses $h \gets G$.
+\STATE \code{Chal} gives $G, q, g, h$ to $\advrs$.
+\STATE $\advrs$ returns $x \in \mathbb{Z}_q$ to \code{Chal}.
+\IF{$g^x = h$}
+	\STATE $\advrs$ wins.
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+It is assumed again that for algorithm 4 $\forall$ PPT $\advrs$, $\exists \code{negl}$ s.t. $\textrm{Pr}[\advrs \textrm{ wins }]\leq \code{negl}(n)$.
+
+The relationship is that: if the discrete-logarithm problem is easy relative to some $\mathcal{G}$, then the CDH problem is too. Similarly, if CDH is easy relative to $\mathcal{G}$, then so is the DDH problem. However, the converse is not true. There are groups where discrete-logarithm and CDH problems are believed to be hard even though DDH problem is easy.
+
+If you have an algorithm that solves discrete-logarithm problem in some group, then you can easily construct one that can solve CDH and then DDH. For CDH, just compute $y$ from $h_2$ and calculate $h'=h_1^{x_2}$. However, the other way around is not known. To solve DDH, just compute $x$ from $h_1$ and $y$ from $h_2$ and then check whether $h'=g^{xy}$.
+
+This means, DDH is at least as easy as CDH, and CDH is at least as eays as DL. Or, the other way around, DL is at least as hard as CDH, and CDH is at least as hard as DDH.\footnote{https://crypto.stackexchange.com/questions/1493/what-is-the-relation-between-discrete-log-computational-diffie-hellman-and-deci}. Thus, the hardness of DDH is a stronger assumption (is valid in fewer groups) than the hardness of CDH, which itself is still stronger than the hardness of DL.
+
+For this question in particular, DDH is a stronger assumption than DL, thus may result in a weaker scheme as that assumption holds for less number of groups than DL.
+
+\vspace{20px}
+\textbf{Q8:} Write down a full reduction proof for the textbook ElGamal encryption system.
+
+\textbf{A8:} We would like to show that if DDH assumption holds, then ElGamal is CPA secure. We look at the contrapositive: if $\exists \advrs$ that breaks ElGamal, then we can construct $B$ that breaks DDH assumption.
+For the sake of space, I am just writing the logic of the proof here. Let $\code{Chal}$ be the challenger for $B$, and $B$ is the challenger for $\advrs$. $\code{Chal}$ gives $B$: $\langle G, q, g, h_1, h_2, h_3\rangle$. Suppose $h_1 = g^x, h_2 = g^y$. $B$ gives to $A$ as public key $pk = \langle G, q, g, h_1 \rangle$. When $\advrs$ makes the challenge query $m_0, m_1$, $B$ picks a bit $b \gets \{0, 1\}$ and encrypts $c = \langle h_2, h_3 \cdot m_b\rangle$. For $h_3$, there are two cases:
+\begin{itemize}
+	\item $h_3 = g^z$. In this case, the game is indistinguishable for $\advrs$, so it wins with probability $1/2$. $b' = 0$ with probability $1/2$.
+	\item $h_3 = g^{xy}$. In this case, the ElGamal breaking $\advrs$ wins with probability $1/2 + \epsilon(n)$ where by the contrapositive statement $\epsilon(n)$ is non-negligible, so $b' = 1$ with probability $1/2 + \epsilon(n)$.
+\end{itemize}
+Suppose $B$ outputs $b' = 1$ when $\advrs$ wins the game between them, $b' = 0$ otherwise. Also suppose that $\code{Chal}$ chooses $b_c \in \{0, 1\}$, and when $b_c = 1$ it sets $h_3 = g^{xy}$, $h_3 = g^z$ otherwise.
+
+Here, $B$ wins with probability $1/2(1/2) + 1/2(1/2 + \epsilon) = 1/2 + \epsilon(n)/2$. If $\epsilon(n)$ is non-negligible, this breaks DDH assumption, therefore $\epsilon(n)$ must be negligible, and thus ElGamal is CPA-secure.
+
+\vspace{20px}
+\textbf{Q9:} Formally define TDP (trapdoor permutation) and TDF (trapdoor function). How does one use a TDP/TDF to obtain a public key encryption scheme?
+
+\textbf{A9:} A trapdoor function family $\Pi = (Gen, f, Inv)$:
+\begin{itemize} 
+\item $Gen$ on input $1^n$ outputs $(I, \code{td})$. Each value of $I$ defines a set $D_I$ that constitutes the domain and range of a permutation $f_I : D_I \to D_i$. 
+\item Let $(I, \code{td})$ be an output by $Gen(1^n)$. The deterministic inverting algorithm $Inv$, on input $\code{td}$ and $y \in D_I$ outputs $x \in D_I$, denoted as $x = Inv_{\code{td}}(y)$. It is required (except with negligible probability) that:
+$$
+Inv_{\code{td}}(f_I(x)) = x
+$$
+\end{itemize} 
+Let $\Pi' = (Gen', f, Inv)$ be a TDP family with hard-core predicate $\code{hc}$, then define a public key encryption scheme $\Pi = (Gen, Enc, Dec)$ as follows:
+\begin{itemize} 
+\item $Gen$: On input $1^n$, run $Gen'(1^n)$ to obtain $(I, \code{td})$. Output the public key $pk=I$ and secret key $sk=\code{td}$.
+\item $Enc$: On input a public key $pk=I$ and message (bit) $m \in \{0, 1\}$, choose a uniform $r \in D_I$ subject to the constraint $\code{hc}_I(r)=m$. Output $c = f_I(r)$.
+\item $Dec$: On input a secret key $sk=\code{td}$ and a ciphertext $c$, compute $r = Inv_I(c)$ and output $\code{hc}_I(r)$.
+\end{itemize} 
+
+\vspace{20px}
+\textbf{Q10:} How can one overcome the limitation that TDP/TDF is deterministic, while we know that deterministic encryption cannot be CPA- or CCA-secure?
+
+\textbf{A10:} There is actually a bit of randomness, it is inside the encryption function when we choose a uniform $r \in D_I$ subject to the constraint $\code{hc}_I(r)=m$. Thanks to this randomness, it is actually not an absolutely deterministic encryption. 
+\end{document}
