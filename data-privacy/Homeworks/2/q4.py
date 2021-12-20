@@ -8,7 +8,7 @@ rcParams.update({'figure.autolayout': True})
 #### PARAMS #############
 SA = 'income' # we only care about 1 SA in this project.
 QIs = ['education', 'gender', 'marital-status', 'native-country', 'occupation', 'relationship', 'workclass'] # arbitrary number of QIs are allowed.
-dghDirectory = 'DGHs'
+dghDirectory = './res/DGHs'
 dataPath = 'adult.csv'
 #########################
 ### GLOBALS ####

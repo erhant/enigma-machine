@@ -109,7 +109,7 @@ All together, a system where all patient records are stored privately (by defaul
  	\begin{figure}
  	\label{fig:hist}
  	\caption{Number of people with income $>$ 50K with respect to their education level.}
- 	\includegraphics[width=\linewidth]{histogram.pdf}
+ 	\includegraphics[width=\linewidth]{img/histogram.pdf}
 	 \end{figure}
 	 	 	
  	\item For this question I will give my answers verbally:
@@ -123,7 +123,7 @@ All together, a system where all patient records are stored privately (by defaul
  	\end{itemize}
 	Note that the last 3 is actually the complement of first three in their respective order, because $Pr[B | A] + Pr[\neg B | A] = 1$, which we will also observe in our results. 
  	
- 	\item The results are obtained from my code, which you may find in the submission (\code{question3.py}).
+ 	\item The results are obtained from my code, which you may find in the submission (\code{q3.py}).
  	\begin{itemize}
  		\item $\text{Pr}[\text{income}>50\text{K }|\text{ race }=\text{ White}] = 0.2623705112716243$
  		\item $\text{Pr}[\text{income}>50\text{K }|\text{ race }=\text{ Black}] = 0.12630085146641437$  
@@ -181,11 +181,11 @@ We have: $TP=850$, $FP=15$, $FN=50$, $TN=85$. The formulas below are taken from 
 
 \textbf{Answer 5:}
 \begin{enumerate}[label=\alph*.]
-	\item The CSV file \code{rockyouDictionary.csv} and the source code \code{question5.py} are attached in the submission.
+	\item The CSV file \code{rockyouDictionary.csv} and the source code \code{q5.py} are attached in the submission.
 	\item Alice's password is \code{iloveyou2}, Bob's password is \code{gangsta}, and Charlie's password is \code{beautiful}.
 	\item The attack from parts (a) and (b) work. What we are doing is also known as a preimage attack, where given a hash function $H : X \xrightarrow{} Y$ (\code{sha512}) and $y \in Y$ (user's password hash), we are trying to find an $x \in X$ (user's actual password) such that $H(x)=y$. The thing is, what normally would be the entire domain $X$ of this function, is narrowed down to a bare few hundred elements in \code{rockyou.txt}, which enables us to try all of these and see if we can succeed in our preimage attack. Indeed, we were able to find the passwords, which is due to the fact that Alice, Bob and Charlie used popular passwords, which we had in our dictionary!
 	\item Our attack will be similar to the one we did above, however it will have a twist. Let $P$ be the set of passwords we will have in our dictionary (as obtained from \code{rockyou.txt}). Let $H$ be the hash function. Our dictionary included the result of these hash functions, as $P \implies H(P)$. Now, we will have to consider the salt. We know that the trick is to do \code{password || salt} and take the hash of this. Let $S$ be the set of salts to consider (as obtained from \code{salty-rockyou.txt}), now we will calculate the dictionary as $P \times S \implies H(P \times S)$, where for $p \in P$ and $s \in S$, $p \times s = p || s$. Our dictionary was normally of size $|P|$, but now it will be $|P|\times|S|$. This requires $|S|$ times more computation than the previous attack.
-	\item Dave's password is \code{manutd}, Elaine's password is \code{hello}, and Faith's password is \code{0123456789}. The source code \code{question5.py} is attached in submission.
+	\item Dave's password is \code{manutd}, Elaine's password is \code{hello}, and Faith's password is \code{0123456789}. The source code \code{q5.py} is attached in submission.
 \end{enumerate}
 
 

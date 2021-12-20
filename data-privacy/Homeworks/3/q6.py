@@ -70,7 +70,7 @@ class SimpleRAPPOR:
 
 ###############################################################################
 # Read ages.txt
-uservalues = (pd.read_csv("ages.txt",  header=None))[0].tolist()
+uservalues = (pd.read_csv("./res/ages.txt",  header=None))[0].tolist()
 
 # Domain
 domain = np.array(list(range(1, 101))) # 100 included

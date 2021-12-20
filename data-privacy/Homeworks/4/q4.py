@@ -211,7 +211,7 @@ def ensemble_run(X_train, X_test, y_train, y_test, iterations=25):
 
 ###############################################################################
 ITER = 25
-X_train, X_test, y_train, y_test = prepareData('iris.csv.', 'variety', ['sepal.length','sepal.width','petal.length','petal.width'])
+X_train, X_test, y_train, y_test = prepareData('./res/iris.csv', 'variety', ['sepal.length','sepal.width','petal.length','petal.width'])
 
 print("=== Starter Models ===")
 run(X_train, X_test, y_train, y_test, iterations=ITER)

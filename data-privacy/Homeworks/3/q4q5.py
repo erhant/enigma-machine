@@ -13,7 +13,7 @@ def avgError(hist, histnoised):
 np.random.seed(123456)
 
 # Import data
-df = pd.read_csv("adult.csv") 
+df = pd.read_csv("./res/adult.csv") 
 df['education'] = df['education'].astype('category')
 rows = df.shape[0]
 print(df.shape,"initially")

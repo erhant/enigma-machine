@@ -1,8 +1,8 @@
 import hashlib
 import pandas as pd 
-megacorp = pd.read_csv("megacorp.txt")
-megacorpSalty = pd.read_csv("salty-megacorp.txt")
-passwords = pd.read_csv("rockyou.txt", header=None, names=['password'])
+megacorp = pd.read_csv("./res/megacorp.txt")
+megacorpSalty = pd.read_csv("./res/salty-megacorp.txt")
+passwords = pd.read_csv("./res/rockyou.txt", header=None, names=['password'])
 
 # Oneliner hash
 getHashHex = lambda p : hashlib.sha512(bytes(p, encoding='utf8')).hexdigest()
@@ -14,7 +14,7 @@ def createDictionary(p, src, dest):
 createDictionary(passwords, 'password', 'hash_of_password')
 
 # Save CSV
-passwords.to_csv("rockyouDictionary.csv", index=False)
+passwords.to_csv("./out/rockyouDictionary.csv", index=False)
 
 # Find passwords of megacorp users
 for i in range(megacorp.shape[0]):

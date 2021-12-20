@@ -236,12 +236,12 @@ This works because of the parallel composition property of DP. Each bin is actua
 \begin{figure}[ht]
  	\label{fig:hist}
  	\caption{Number of people with income $>$ 50K with respect to their education level.}
- 	\includegraphics[width=0.7\linewidth]{histogram.pdf}
+ 	\includegraphics[width=0.7\linewidth]{img/histogram.pdf}
 \end{figure}
 \begin{figure}[ht]
  	\label{fig:histnoise}
  	\caption{Number of people with income $>$ 50K with respect to their education level with added Laplace noise.}
- 	\includegraphics[width=0.7\linewidth]{histogramNoisy.pdf}
+ 	\includegraphics[width=0.7\linewidth]{img/histogramNoisy.pdf}
 \end{figure}
 We see that they are actually not so far apart, we can still ``have an idea'' about the overall distribution of education and income, however, in a finer granularity we can see errors, for example in the noisy histogram there is a negative value! That would not happen in a normal histogram, which counts number of occurences, and occurence cant be negative. However like I stated before, this does not prevent us to have a general idea regarding the histogram.
 
@@ -249,7 +249,7 @@ We see that they are actually not so far apart, we can still ``have an idea'' ab
 \begin{figure}[ht]
  	\label{fig:err}
  	\caption{Error and Epsilon.}
- 	\includegraphics[width=0.7\linewidth]{errorEps.pdf}
+ 	\includegraphics[width=0.7\linewidth]{img/errorEps.pdf}
 \end{figure}
 \end{enumerate}
 We can see that error rises exponentially when we decrease epsilon. This is expected, smaller epsilon means more noise, and more noise means more error. The scale parameter of laplace distribution increases when epsilon decreases, and as a result higher noises start to have higher probability. This reflects to our results as high error.
@@ -296,7 +296,7 @@ With smaller epsilon, the accuracy drops significantly. By looking at the table,
 	\begin{figure}[ht]
  	\label{fig:err2}
  	\caption{Error and Epsilon for GRR and SimpleRAPPOR.}
- 	\includegraphics[width=0.7\linewidth]{grrRapporErrors.pdf}
+ 	\includegraphics[width=0.7\linewidth]{img/grrRapporErrors.pdf}
 \end{figure}
 \begin{enumerate}[label=(\alph*)]
 	\item Source code attached.

@@ -93,7 +93,7 @@ def ec_t_closeness(df, ecDf, dist):
     return dist(Q, P) # dist(Q, P) = t is the minimum t
 
 # Import
-df = pd.read_csv("q1.csv")  
+df = pd.read_csv("./res/q1.csv")  
 df.index += 1 
 
 # Find equivalence classes
