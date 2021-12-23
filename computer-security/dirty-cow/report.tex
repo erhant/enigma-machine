@@ -86,24 +86,22 @@
 \begin{document}
 
 \begin{center}
-\large\textbf{Project 2 \\ COMP534 Spring 2021\\Computer \& Network Security \\}
-\normalsize\textbf{ Erhan Tezcan 0070881 \\ 24.03.2021} \\
+  \large\textbf{Dirty Cow Attack} \\
 \end{center}
 
 \begin{center}
-\line(1,0){250}
+  \line(1,0){250}
 \end{center}
 
-\section{Report}
-This report includes screenshots for the project, and a brief analysis regarding the code.
+This report includes screenshots for the project, and a brief analysis regarding the code. It uses SeedLab's Ubuntu 12.04 VM.
 
 \subsection{Writing to \code{zzz} file}
 In figure 1 we see the commands that demonstrate how it is possible to write to a file without right privileges. 
 
 \begin{figure}[h]
-\label{fig:zzz}
-\includegraphics[width=\linewidth]{part2.png}
-\caption{Dirty COW attack on file \code{/zzz}.}
+  \label{fig:zzz}
+  \includegraphics[width=\linewidth]{img/part2.png}
+  \caption{Dirty COW attack on file \code{/zzz}.}
 \end{figure}
 
 With \code{ls /zzz -l} we can see that only the root user can write to \code{/zzz} file, also underlined with green color in the figure. The file content is the string ``Erhan''. By running our attack, targeting the file and replacing ``Erhan''' with ``Tezcan'' we effectively write to the file. Note that after writing to the file via Dirty COW, the file is still only writable by the root, shown at the last two commands in the figure.
@@ -115,9 +113,9 @@ Notice that since ``Tezcan'' is 1 character longer than ``Erhan'', the newline c
 In figure 2 we see the commands that demonstrate how it is possible to use Dirty COW attack to make an arbitrary user ``charlie'' the root. 
 
 \begin{figure}[h]
-\label{fig:charlie}
-\includegraphics[width=\linewidth]{part3.png}
-\caption{Dirty COW attack on file \code{/etc/passwd}.}
+  \label{fig:charlie}
+  \includegraphics[width=\linewidth]{img/part3.png}
+  \caption{Dirty COW attack on file \code{/etc/passwd}.}
 \end{figure}
 
 With the previous task, we have seen that we can replace a string in a file with another string. Now we will replace the user ID of charlier with 0, which in effect will make him a root. Indeed, after launching the attack and then switching to user charlie, we can see that we have root access.
@@ -126,7 +124,7 @@ With the previous task, we have seen that we can replace a string in a file with
 The attack relies on racing the \code{madvise(MADV\_DONTNEED)} system call while having the page of the executable mmapped in memory\footnote{\url{https://github.com/dirtycow/dirtycow.github.io/wiki/VulnerabilityDetails}}.
 
 \begin{figure}[h]
-\begin{lstlisting}[style=CStyle, firstnumber=22]
+  \begin{lstlisting}[style=CStyle, firstnumber=22]
   // Open the target file in the read-only mode.
   int f=open("/etc/passwd", O_RDONLY);
 
@@ -147,11 +145,11 @@ The attack relies on racing the \code{madvise(MADV\_DONTNEED)} system call while
   pthread_join(pth2, NULL);
   return 0;
 \end{lstlisting}
-\caption{Inside \code{main}. Omitted some declarations for brevity. It's task is to find the position of the target, which we can do with read access alone, and then launch the threads. It waits for the threads to finish, but the threads run forever so the user has to manually interrupt the program to exit.}
+  \caption{Inside \code{main}. Omitted some declarations for brevity. It's task is to find the position of the target, which we can do with read access alone, and then launch the threads. It waits for the threads to finish, but the threads run forever so the user has to manually interrupt the program to exit.}
 \end{figure}
 
-\begin{figure}[h] 
-\begin{lstlisting}[style=CStyle, firstnumber=46]
+\begin{figure}[h]
+  \begin{lstlisting}[style=CStyle, firstnumber=46]
 void *writeThread(void *arg) {
   char *content= "charlie:x:0000";
   off_t offset = (off_t) arg;
@@ -164,11 +162,11 @@ void *writeThread(void *arg) {
   }
 }
 \end{lstlisting}
-\caption{\code{write} thread. Writes the content to the position of the target. If lucky, this will be conducted on the memory that is supposed to be used by madvise.}
+  \caption{\code{write} thread. Writes the content to the position of the target. If lucky, this will be conducted on the memory that is supposed to be used by madvise.}
 \end{figure}
 
-\begin{figure}[h] 
-\begin{lstlisting}[style=CStyle, firstnumber=61]
+\begin{figure}[h]
+  \begin{lstlisting}[style=CStyle, firstnumber=61]
 void *madviseThread(void *arg)
 {
   int file_size = (int) arg;
@@ -177,7 +175,7 @@ void *madviseThread(void *arg)
   }
 }
 \end{lstlisting}
-\caption{\code{madvise} thread. A system call to cause copy-on-write (COW).}
+  \caption{\code{madvise} thread. A system call to cause copy-on-write (COW).}
 \end{figure}
 
 When we call these two threads (figures 4 and 5) there is a chance that the write will actually write to the mapped memory that is used by madvise in a COW fashion. COW is a technique of sharing a resource: when the resourse is required but will not be modified, then it is wasteful to create a copy, but what should happen is that the resource itself is delivered. At this point, if the write thread can intercept the memory it can write to it. Since we may not always be lucky and achieve this in a single function call, the threads run forever and the attack is interrupted by the adversary. In my own case, I ran it for around 5-6 seconds and it was always successful.
