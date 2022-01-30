@@ -1,14 +1,22 @@
-const Enigma = require('./enigma')
-const Enums = require('./enums')
-const Alphabet = require('./alphabet')
+const Enigma = require('./enigma');
+const Enums = require('./enums');
+const Alphabet = require('./alphabet');
 const cliProgress = require('cli-progress');
 
 // PDF: NPWCDPBRIVDZGARYLECHBTOCKJCMJVDRFZEYFWJTRZLPDEVDHIJXYHRBRJTVVQCFDQUWHRQKYPYFAJJKSDEJVOVZNWYFYINBPBSNHZAGDACJRYRLLJAWCJKHTEVATAAZWVUHSBTCKBVHTNSGFDPHGIZDSZXMBSIKWLMMISUQNWCRPSHSNFAALBQNMKESIHCPGVRTRFTPRYTRIRMNYMVSLEKAPRISAUSTRXQFVCLYWXZLLXHHKHJJUTPKHBTFENHMFRLFLUHYQJSCMNEBB
 
-
 module.exports = class Bombe {
-  constructor(rotorLetters1, rotorLetters2, rotorLetters3, base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
-    this.rotorPermutations = permutator([rotorLetters1, rotorLetters2, rotorLetters3]);
+  constructor(
+    rotorLetters1,
+    rotorLetters2,
+    rotorLetters3,
+    base = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  ) {
+    this.rotorPermutations = permutator([
+      rotorLetters1,
+      rotorLetters2,
+      rotorLetters3,
+    ]);
     this.base = base;
   }
 
@@ -16,13 +24,17 @@ module.exports = class Bombe {
   crack(ciphertext, keywords) {
     const start = new Date();
     const progbar = new cliProgress.SingleBar({
-        format: 'Exhaustive Search'.red +' |' + '{bar}'.cyan + '|\t{percentage}%\t{value}/{total} Combinations',
-        barCompleteChar: '\u2588',
-        barIncompleteChar: '\u2591',
-        hideCursor: true
+      format:
+        'Exhaustive Search'.red +
+        ' |' +
+        '{bar}'.cyan +
+        '|\t{percentage}%\t{value}/{total} Combinations',
+      barCompleteChar: '\u2588',
+      barIncompleteChar: '\u2591',
+      hideCursor: true,
     });
-    progbar.start(26*26*26*6, 0, {
-        speed: "N/A"
+    progbar.start(26 * 26 * 26 * 6, 0, {
+      speed: 'N/A',
     });
     let candidates = [];
     for (let r = 0; r < this.rotorPermutations.length; r++) {
@@ -38,13 +50,13 @@ module.exports = class Bombe {
               toAlphabets: [
                 new Alphabet(rotorLetters[0]),
                 new Alphabet(rotorLetters[1]),
-                new Alphabet(rotorLetters[2])  
-              ]
+                new Alphabet(rotorLetters[2]),
+              ],
             });
             // Decrypt c
             let p = enigma.decrypt(ciphertext);
             // Check if keyword is contained
-            for (let k = 0; k<=keywords.length; k++) {
+            for (let k = 0; k <= keywords.length; k++) {
               if (k === keywords.length) {
                 // All words are matched. Save the decryption.
                 candidates.push(p);
@@ -64,18 +76,23 @@ module.exports = class Bombe {
       }
     }
     progbar.stop();
-    console.log('\nThat took: '.yellow+((new Date()) - start)+" ms\n")
-    candidates = candidates.filter((elem, pos) => candidates.indexOf(elem) == pos) // todo: for some reason there are dupes and we need to remove them
-    console.log('Candidate plaintexts:\n', candidates.length == 0 ? "None".red : candidates);
+    console.log('\nThat took: '.yellow + (new Date() - start) + ' ms\n');
+    candidates = candidates.filter(
+      (elem, pos) => candidates.indexOf(elem) == pos
+    ); // todo: for some reason there are dupes and we need to remove them
+    console.log(
+      'Candidate plaintexts:\n',
+      candidates.length == 0 ? 'None'.red : candidates
+    );
   }
-
-}
+};
 
 // credit: https://stackoverflow.com/questions/9960908/permutations-in-javascript
 function permutator(inputArr) {
   var results = [];
   function permute(arr, memo) {
-    var cur, memo = memo || [];
+    var cur,
+      memo = memo || [];
     for (var i = 0; i < arr.length; i++) {
       cur = arr.splice(i, 1);
       if (arr.length === 0) {

@@ -1,16 +1,38 @@
 const EN = [
-  'A', 'B', 'C', 'D', 
-  'E', 'F', 'G', 'H', 
-  'I', 'J', 'K', 'L',
-  'M', 'N', 'O', 'P',
-  'Q', 'R', 'S', 'T',
-  'U', 'V', 'W', 'X',
-  'Y', 'Z'];
-const ENSTR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+];
+const ENSTR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 function fisherYatesShuffle(arr) {
-  array = JSON.parse(JSON.stringify(arr));
-  let currentIndex = array.length, temporaryValue, randomIndex;
+  const array = JSON.parse(JSON.stringify(arr));
+  let currentIndex = array.length,
+    temporaryValue,
+    randomIndex;
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
     // Pick a remaining element...
@@ -35,12 +57,12 @@ module.exports = class Alphabet {
     } else if (source instanceof String) {
       this.alphabet = source.split('');
       if (this.alphabet.length < 1 || this.alphabet.length > 26) {
-        throw new Error("Invalid letter string.");
+        throw new Error('Invalid letter string.');
       }
     } else if (source instanceof Array) {
       this.alphabet = source;
     } else {
-      throw new Error("Expected either a number, string or array as source.");
+      throw new Error('Expected either a number, string or array as source.');
     }
   }
 
@@ -55,5 +77,4 @@ module.exports = class Alphabet {
   shuffleNew() {
     return fisherYatesShuffle(this.alphabet);
   }
-  
-}
+};
