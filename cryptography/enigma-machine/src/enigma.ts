@@ -6,8 +6,13 @@ enum DIRECTION {
   RIGHT = 1,
 }
 
-type char = string; // for readability
+// A character type for readability. It is just a string of length 1.
+type char = string;
 
+/**
+ * Enigma machine has a RotorManager that encrypts and decrypts letters, using a set of rotors.
+ * Given a string, it will process letters from left to right.
+ */
 export class Enigma {
   rotors: RotorManager;
 
@@ -19,6 +24,14 @@ export class Enigma {
     }
   }
 
+  /**
+   * Creates a set of rotors from a source alphabet.
+   *
+   * @param alphabet Source alphabet. Destinations will be created by shuffling it.
+   * @param rotorCount Number of rotors.
+   * @param rotationDirection Rotate rotors left or right? Left by default.
+   * @returns RotorManager that can be used to construct Enigma.
+   */
   static makeRotorsRandom(
     alphabet: string,
     rotorCount: number,
@@ -33,32 +46,47 @@ export class Enigma {
     return new RotorManager(rotors, rotationDirection);
   }
 
+  /**
+   * Creates a set of rotors from a source alphabet and a list of destination alphabets.
+   *
+   * @param source Source alphabet.
+   * @param destinations List of destination alphabets, one for each rotor.
+   * @param rotationDirection Rotate rotors left or right? Left by default.
+   * @returns RotorManager that can be used to construct Enigma.
+   */
   static makeRotors(
     source: string,
     destinations: string[],
     rotationDirection: DIRECTION = DIRECTION.LEFT
   ): RotorManager {
-    const rotors: Rotor[] = [];
-    for (let i = 0; i < destinations.length; ++i) {
-      rotors.push(
-        new Rotor(
-          source,
-          fisherYatesShuffle<char>([...destinations[i]]).join('')
-        )
-      );
-    }
-    return new RotorManager(rotors, rotationDirection);
+    return new RotorManager(
+      [...destinations].map(destination => new Rotor(source, destination)),
+      rotationDirection
+    );
   }
 
   encrypt(p: string): string {
-    return [...p].map(pl => this.rotors.encrypt(pl)).join('');
+    let c = '';
+    for (let i = 0; i < p.length; i++) {
+      c += this.rotors.encrypt(p[i]);
+    }
+    return c;
   }
 
   decrypt(c: string): string {
-    return [...c].map(cl => this.rotors.decrypt(cl)).join('');
+    let p = '';
+    for (let i = 0; i < c.length; i++) {
+      p += this.rotors.decrypt(c[i]);
+    }
+    return p;
   }
 }
 
+/**
+ * RotorManager manages the rotors :)
+ * It encrypts letter using all of these, and rotates them.
+ * If a rotor clicks, the subsequent rotor should rotate.
+ */
 class RotorManager {
   rotors: Rotor[];
   length: number;
@@ -101,6 +129,10 @@ class RotorManager {
   }
 }
 
+/**
+ * Rotor is a single rotating mapping device, that rotates once in every letter encryption.
+ * When it rotates L many times where L is the length of alphabet, it clicks.
+ */
 class Rotor {
   from: char[];
   to: char[];
