@@ -91,11 +91,13 @@ class RotorManager {
   rotors: Rotor[];
   length: number;
   direction: DIRECTION;
+  initialRotors: Rotor[];
 
   constructor(rotors: Rotor[], direction: DIRECTION = DIRECTION.LEFT) {
     this.rotors = rotors;
     this.length = rotors.length;
     this.direction = direction;
+    this.initialRotors = JSON.parse(JSON.stringify(rotors));
   }
 
   encrypt(pl: char): char {
@@ -126,6 +128,10 @@ class RotorManager {
       }
     }
     return cl;
+  }
+
+  reset() {
+    this.rotors = JSON.parse(JSON.stringify(this.initialRotors));
   }
 }
 
