@@ -127,7 +127,7 @@ class RotorManager {
         break;
       }
     }
-    return cl;
+    return pl;
   }
 
   reset() {

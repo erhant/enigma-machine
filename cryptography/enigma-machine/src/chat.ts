@@ -15,7 +15,7 @@ interface ChatHistory {
   entries: ChatEntry[];
 }
 
-class ChatClient {
+export class ChatClient {
   username: string; // Username
   enigma: Enigma; // Enigma machine to be used
   history: ChatHistory;
@@ -55,7 +55,7 @@ class ChatClient {
       if (entry.message === EXIT_TEXT) {
         break;
       } else {
-        this.write(entry);
+        //this.write(entry);
       }
     }
 
