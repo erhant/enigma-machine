@@ -1,24 +1,21 @@
 import {createInterface, Interface} from 'readline';
 import {Enigma} from './enigma';
-import {readFileSync} from 'fs';
+import {readFileSync, writeFileSync} from 'fs';
 
-const CHAT_CHANNEL = '../chat/history.json';
+const CHAT_CHANNEL = './chat/history.json';
 const REFRESH_TIME_MS = 2000;
 const EXIT_TEXT = 'EXIT';
 
 interface ChatEntry {
   username: string;
   message: string;
-  datetime: string;
-}
-interface ChatHistory {
-  entries: ChatEntry[];
+  time: string;
 }
 
 export class ChatClient {
   username: string; // Username
   enigma: Enigma; // Enigma machine to be used
-  history: ChatHistory;
+  head: number;
   channel: string;
 
   constructor(
@@ -29,13 +26,42 @@ export class ChatClient {
     this.username = username;
     this.enigma = enigma;
     this.channel = channel;
-    this.history = ChatClient.readChannel(channel);
+    this.head = 0;
+    // read existing messages
+    this.readChannel();
   }
 
-  private static readChannel(channel: string): ChatHistory {
-    return JSON.parse(readFileSync(channel, 'utf8'));
+  // Print an entry to your console
+  private static printEntry(entry: ChatEntry) {
+    console.log(`${entry.username} at ${entry.time}: ${entry.message}`);
   }
 
+  // Add an entry to the channel
+  private writeChannel(myEntry: ChatEntry) {
+    const entries: ChatEntry[] = JSON.parse(readFileSync(this.channel, 'utf8'));
+    // print entries, starting from the header
+    for (let i = this.head; i < entries.length; ++i) {
+      ChatClient.printEntry(entries[i]);
+    }
+    // add your own message to file, and print
+    writeFileSync(this.channel, JSON.stringify(entries.concat(entries)));
+    ChatClient.printEntry(myEntry);
+    // move head to the end of entries
+    this.head = entries.length + 1;
+  }
+
+  // Read entries in the channel
+  private readChannel() {
+    const entries: ChatEntry[] = JSON.parse(readFileSync(this.channel, 'utf8'));
+    // print entries, starting from the header
+    for (let i = this.head; i < entries.length; ++i) {
+      ChatClient.printEntry(entries[i]);
+    }
+    // move head to the end of entries
+    this.head = entries.length;
+  }
+
+  // Start the active loop, which excepts input from the user and also refreshes the channel
   public async interface() {
     const rl = createInterface({
       input: process.stdin,
@@ -43,11 +69,9 @@ export class ChatClient {
     });
     let entry: ChatEntry;
     // launch interval for the screen refresh
-    const interval: NodeJS.Timeout = setInterval(
-      this.refresh,
-      REFRESH_TIME_MS,
-      this.username
-    );
+    const interval: NodeJS.Timeout = setInterval(() => {
+      () => this.readChannel;
+    }, REFRESH_TIME_MS);
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -55,16 +79,12 @@ export class ChatClient {
       if (entry.message === EXIT_TEXT) {
         break;
       } else {
-        //this.write(entry);
+        this.writeChannel(entry);
       }
     }
 
     // clear refresh
     clearInterval(interval);
-  }
-
-  private refresh() {
-    // todo
   }
 
   // Prompt the client for input
@@ -75,7 +95,7 @@ export class ChatClient {
         resolve({
           username: this.username,
           message: input,
-          datetime: Date.toString(),
+          time: new Date().toTimeString(),
         });
       });
     });
