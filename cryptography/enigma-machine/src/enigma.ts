@@ -48,6 +48,11 @@ export class Enigma {
     return new RotorManager(rotors, rotationDirection);
   }
 
+  /**
+   * Construct a RotorManager from a set of rotors specified in a file. Must be YAML format.
+   * @param path a file that contains rotor details
+   * @returns RotorManager that can be used to construct Enigma.
+   */
   static makeRotorsFromFile(path: string): RotorManager {
     const rotorDetails: {
       alphabet: string;

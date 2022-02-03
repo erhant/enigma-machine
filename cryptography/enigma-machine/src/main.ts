@@ -1,6 +1,5 @@
 import {Enigma} from './enigma';
 import {ChatClient} from './chat';
-import {ENGLISH_ALPHABET, EXAMPLE_ROTOR_SETUP} from './utility';
 import minimist = require('minimist');
 const args: minimist.ParsedArgs = minimist(process.argv.slice(2));
 
