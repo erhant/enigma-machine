@@ -5,6 +5,8 @@ import sys
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
  
+### TODO: write this again
+
 #### PARAMS #############
 SA = 'income' # we only care about 1 SA in this project.
 QIs = ['education', 'gender', 'marital-status', 'native-country', 'occupation', 'relationship', 'workclass'] # arbitrary number of QIs are allowed.

@@ -1,9 +1,9 @@
 ### Security
 
-This folder contains some work while I've done as I took Computer & Network Security class in Spring 2021 at Koç University. There are 3 projects:
+There are 3 projects here:
 
-- [Dirty Cow Attack](/dirty-cow-attack)
-- [Kaminsky Attack](/kaminsky-attack)
-- [SQL Injection](/sql-injection)
+- [Dirty Cow](/dirty-cow-attack): a privilege escalation attack
+- [Kaminsky Attack](/kaminsky-attack): DNS corruption
+- [SQL Injection](/sql-injection): SQL injection on a test webpage
 
-All these projects use SeedLab VM's.
+All these projects use [SeedLab](https://seedsecuritylabs.org/) VM's.
