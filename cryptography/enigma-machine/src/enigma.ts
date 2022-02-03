@@ -1,5 +1,5 @@
 import {assert} from 'console';
-import {fisherYatesShuffle, ENGLISH_ALPHABET} from './utility';
+import {fisherYatesShuffle} from './utility';
 import YAML = require('yaml');
 import {readFileSync} from 'fs';
 
@@ -18,12 +18,8 @@ type char = string;
 export class Enigma {
   rotors: RotorManager;
 
-  constructor(rotors: RotorManager | null = null) {
-    if (rotors) {
-      this.rotors = rotors;
-    } else {
-      this.rotors = Enigma.makeRotorsRandom(ENGLISH_ALPHABET, 3);
-    }
+  constructor(rotors: RotorManager) {
+    this.rotors = rotors;
   }
 
   /**
