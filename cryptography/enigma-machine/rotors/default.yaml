@@ -1,0 +1,8 @@
+--- # Default rotor settings as an example
+alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ ?'*!.,:;()" # source alphabet
+rotors: # number of rotors inferred by the length of this array
+  - ",SHBM FWE?;IQRO)DTAVX*CP:YZU(JK!GNL'."
+  - "GYRFN.UC ZLQ(?DWMK*HS;J!OEP:BV,IT'XA)"
+  - "MSE .W,GQ:H*DPRFNX'AT;OIB!U?JLC)(ZVYK"
+direction: 0 # 0: left, 1: right
+

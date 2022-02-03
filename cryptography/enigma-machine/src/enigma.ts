@@ -1,5 +1,7 @@
 import {assert} from 'console';
 import {fisherYatesShuffle, ENGLISH_ALPHABET} from './utility';
+import YAML = require('yaml');
+import {readFileSync} from 'fs';
 
 enum DIRECTION {
   LEFT = 0,
@@ -46,6 +48,19 @@ export class Enigma {
     return new RotorManager(rotors, rotationDirection);
   }
 
+  static makeRotorsFromFile(path: string): RotorManager {
+    const rotorDetails: {
+      alphabet: string;
+      rotors: string[];
+      direction: boolean;
+    } = YAML.parse(readFileSync(path, 'utf8').toString());
+    return Enigma.makeRotors(
+      rotorDetails.alphabet,
+      rotorDetails.rotors,
+      rotorDetails.direction ? DIRECTION.RIGHT : DIRECTION.LEFT
+    );
+  }
+
   /**
    * Creates a set of rotors from a source alphabet and a list of destination alphabets.
    *
@@ -59,6 +74,11 @@ export class Enigma {
     destinations: string[],
     rotationDirection: DIRECTION = DIRECTION.LEFT
   ): RotorManager {
+    // assert all destination lengths are equal
+    assert(
+      destinations.every(d => d.length === destinations[0].length),
+      'Destination length mismatch'
+    );
     return new RotorManager(
       [...destinations].map(destination => new Rotor(source, destination)),
       rotationDirection

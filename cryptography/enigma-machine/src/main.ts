@@ -2,26 +2,26 @@ import {Enigma} from './enigma';
 import {ChatClient} from './chat';
 import {ENGLISH_ALPHABET, EXAMPLE_ROTOR_SETUP} from './utility';
 import minimist = require('minimist');
-
 const args: minimist.ParsedArgs = minimist(process.argv.slice(2));
 
 async function main() {
-  // Setup enigma machine
+  // setup enigma machine
   let E: Enigma;
-  if ('f' in args || '--file' in args) {
-    // read machine configurations
-    console.log('todo...');
-    E = new Enigma(Enigma.makeRotors(ENGLISH_ALPHABET, EXAMPLE_ROTOR_SETUP));
+  if ('r' in args || 'rotors' in args) {
+    // read rotors from file
+    const k: string = 'r' in args ? 'r' : 'rotors';
+    E = new Enigma(Enigma.makeRotorsFromFile(args[k]));
   } else {
     // generate default machine
-    E = new Enigma(Enigma.makeRotors(ENGLISH_ALPHABET, EXAMPLE_ROTOR_SETUP));
+    E = new Enigma(Enigma.makeRotorsFromFile('./rotors/default.yaml'));
   }
 
-  // Process the arguments
+  // process the arguments
   for (const k of Object.keys(args)) {
     switch (k) {
-      case '_': // ignore
-      case 'f': // also ignore
+      case '_': // ignore defaults
+      case 'r': // ignore rotor file (processed above)
+      case 'rotors': // ignore rotor file (processed above)
         break;
       case 'e':
       case 'encrypt':
@@ -37,7 +37,7 @@ async function main() {
       case 'chat': {
         console.log('Joining chat as:', args[k]);
         const cli = new ChatClient(args[k], E);
-        cli.interface();
+        await cli.interface();
         break;
       }
       case 'b':
@@ -53,7 +53,7 @@ async function main() {
       default: {
         console.log(`
 Options:
-  --file      / -f <path>       Setup the machine with given rotors.
+  --rotors    / -r <path>       Setup the machine with given rotors (file).
   --encrypt   / -e <message>    Encrypt a message of your choice
   --decrypt   / -d <message>    Decrypt a message of your choice
   --chat      / -c <username>   Join chat with some username
