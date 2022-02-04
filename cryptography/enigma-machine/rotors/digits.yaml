@@ -1,0 +1,7 @@
+--- # Digits only
+alphabet: "0123456789"
+rotors: 
+  - "0478639152"
+  - "4321567890"
+direction: 0
+

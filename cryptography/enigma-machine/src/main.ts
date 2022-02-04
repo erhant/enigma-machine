@@ -1,6 +1,7 @@
 import {Enigma} from './enigma';
 import {ChatClient} from './chat';
 import minimist = require('minimist');
+import {EavesdropperClient} from './eavesdrop';
 const args: minimist.ParsedArgs = minimist(process.argv.slice(2));
 
 async function main() {
@@ -46,7 +47,9 @@ async function main() {
       }
       case 'a':
       case 'adversary': {
-        console.log('todo');
+        console.log('Eaves dropping:');
+        const cli = new EavesdropperClient();
+        await cli.interface();
         break;
       }
       default: {

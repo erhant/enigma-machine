@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "[]" > ./chat/history.json
+echo "[]" > ./chat/history.yaml

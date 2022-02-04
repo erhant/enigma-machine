@@ -2,33 +2,31 @@ import {createInterface, Interface} from 'readline';
 import {Enigma} from './enigma';
 import {readFileSync, writeFileSync} from 'fs';
 import YAML = require('yaml');
+import {
+  DEFAULT_CHAT_CHANNEL,
+  CHAT_EXIT_TEXT,
+  CHAT_REFRESH_TIME_MS,
+  ChatEntry,
+} from './utility';
 
-const CHAT_CHANNEL = './chat/history.yaml';
-const REFRESH_TIME_MS = 2000;
-
-interface ChatEntry {
-  username: string;
-  message: string;
-  time: string;
-}
-
+/**
+ * ChatClient connects to a local channel, reads the chat history and writes to them in YAML.
+ * Read messages are decrypted, and written messages are encrypted by the Enigma machine.
+ */
 export class ChatClient {
   private username: string;
-  private history: ChatEntry[];
   private enigma: Enigma;
   private head: number;
   private channel: string;
-  private static EXIT_TEXT = 'EXIT()';
 
   constructor(
     username: string,
     enigma: Enigma,
-    channel: string = CHAT_CHANNEL
+    channel: string = DEFAULT_CHAT_CHANNEL
   ) {
     this.username = username;
     this.enigma = enigma;
     this.channel = channel;
-    this.history = [];
     this.head = 0;
     this.readChannel(); // read existing messages
   }
@@ -44,13 +42,13 @@ export class ChatClient {
     // launch interval for the screen refresh
     const interval: NodeJS.Timeout = setInterval(
       () => this.readChannel(), // or .bind(this)
-      REFRESH_TIME_MS
+      CHAT_REFRESH_TIME_MS
     );
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
       entry = await this.prompt(rl, '>: ');
-      if (entry.message === ChatClient.EXIT_TEXT) {
+      if (entry.message === CHAT_EXIT_TEXT) {
         rl.close();
         clearInterval(interval); // clear refresh
         return;

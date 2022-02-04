@@ -3,7 +3,7 @@ import {fisherYatesShuffle} from './utility';
 import YAML = require('yaml');
 import {readFileSync} from 'fs';
 
-enum DIRECTION {
+export enum DIRECTION {
   LEFT = 0,
   RIGHT = 1,
 }
@@ -35,13 +35,14 @@ export class Enigma {
     rotorCount: number,
     rotationDirection: DIRECTION = DIRECTION.LEFT
   ): RotorManager {
-    const rotors: Rotor[] = [];
-    for (let i = 0; i < rotorCount; ++i) {
-      rotors.push(
-        new Rotor(alphabet, fisherYatesShuffle<char>([...alphabet]).join(''))
-      );
-    }
-    return new RotorManager(rotors, rotationDirection);
+    // fisherYatesShuffle<char>([...alphabet]).join('')
+    return Enigma.makeRotors(
+      alphabet,
+      Array.from(Array(rotorCount).keys()).map(() =>
+        fisherYatesShuffle<char>([...alphabet]).join('')
+      ),
+      rotationDirection
+    );
   }
 
   /**
@@ -75,13 +76,16 @@ export class Enigma {
     destinations: string[],
     rotationDirection: DIRECTION = DIRECTION.LEFT
   ): RotorManager {
-    // assert all destination lengths are equal
     assert(
-      destinations.every(d => d.length === destinations[0].length),
-      'Destination length mismatch'
+      destinations.every(
+        (dest: string) =>
+          dest.length === source.length && // lengths are equal
+          [...dest].every(c => source.includes(c)) // all characters exist
+      ),
+      'Destination - Source alphabet mismatch'
     );
     return new RotorManager(
-      [...destinations].map(destination => new Rotor(source, destination)),
+      destinations.map(dest => new Rotor(source, dest)),
       rotationDirection
     );
   }

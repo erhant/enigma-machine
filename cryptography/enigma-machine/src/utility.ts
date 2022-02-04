@@ -15,3 +15,13 @@ export function fisherYatesShuffle<T>(arr: readonly T[]): T[] {
   }
   return array;
 }
+
+export const DEFAULT_CHAT_CHANNEL = './chat/history.yaml';
+export const CHAT_REFRESH_TIME_MS = 2000;
+export const CHAT_EXIT_TEXT = 'EXIT()';
+
+export interface ChatEntry {
+  username: string;
+  message: string;
+  time: string;
+}
