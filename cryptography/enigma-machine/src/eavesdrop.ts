@@ -7,6 +7,7 @@ import {
   CHAT_EXIT_TEXT,
   CHAT_REFRESH_TIME_MS,
   ChatEntry,
+  generate_permutations,
 } from './utility';
 import {assert} from 'console';
 
@@ -71,17 +72,30 @@ export class EavesdropperClient {
       rl.close();
 
       // start cracking!
-      const candidates: string[] = await EavesdropperClient.crack(
+      const rotorCandidates: string[] = await EavesdropperClient.crack(
         target,
         alphabet,
         keywords,
         rotorCount,
         percentage
       );
-      if (candidates.length > 0) {
-        console.log('Candidates found: ', candidates);
+
+      // decrypt if you have found candidates
+      if (rotorCandidates.length === 0) {
+        console.log('No candidate rotors were found...');
       } else {
-        console.log('No candidates...');
+        console.log('Rotor candidates found. Decrypting the chat');
+        const decryptor = new Enigma(
+          Enigma.makeRotors(alphabet, rotorCandidates, DIRECTION.LEFT)
+        );
+        const entries: ChatEntry[] = YAML.parse(
+          readFileSync(this.channel, 'utf8')
+        );
+        // print entries and decrypt
+        for (let i = 0; i < entries.length; ++i) {
+          entries[i].message = decryptor.decrypt(entries[i].message);
+          EavesdropperClient.printEntry(entries[i]);
+        }
       }
     }
   }
@@ -126,24 +140,51 @@ export class EavesdropperClient {
         'Percentage outside (0, 100] range.'
       );
       // create an enigma machine with all rotors initially equal to the alphabet
-      const e: Enigma = new Enigma(
-        Enigma.makeRotors(
-          alphabet,
-          Array.from(Array(rotorCount).keys()).map(() => alphabet),
-          DIRECTION.LEFT
-        )
-      );
+
       const candidates: string[] = [];
-      let p: string; // plaintext candidate
+      let plaintext: string; // plaintext candidate
       let cnt: number; // number of occurences of keyword in p
       const num_attempts: number = Math.pow(alphabet.length, rotorCount); // number of possible configurations
-      let cur_attempt = 1;
+      let attempt_no = 0;
       console.log('Running over', num_attempts, 'possibilities.');
 
-      // TODO: use generator functions to generate permutations
-      candidates.push('todo...');
+      const destinations: string[] = Array<string>(rotorCount);
+      const search = (i: number) => {
+        // permutation generator
+        const gen: Generator<string, undefined, string> =
+          generate_permutations(alphabet);
 
-      resolve(candidates);
+        let dest = gen.next();
+        while (!dest.done) {
+          destinations[i] = dest.value;
+          if (i < rotorCount) {
+            // move on to the next rotor
+            search(i + 1);
+          } else {
+            // rotors ready, attempt crack
+            attempt_no++;
+            plaintext = new Enigma(
+              Enigma.makeRotors(alphabet, destinations, DIRECTION.LEFT)
+            ).decrypt(target);
+
+            // see if we have keywords in this
+            cnt = keywords.filter(k => plaintext.includes(k)).length;
+            if ((100 * cnt) / keywords.length >= percentage) {
+              // matches are good
+              if (!(plaintext in candidates)) {
+                console.log(
+                  `Attempt ${attempt_no}: found new candidate: ${plaintext}`
+                );
+                resolve(destinations);
+              }
+            }
+          }
+          // next permutation
+          dest = gen.next();
+        }
+      };
+      search(0);
+      resolve([]);
     });
   }
 }
