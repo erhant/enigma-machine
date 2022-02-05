@@ -1,5 +1,5 @@
 import {assert} from 'console';
-import {fisherYatesShuffle} from './utility';
+import {fisherYatesShuffle, char} from './utility';
 import YAML = require('yaml');
 import {readFileSync} from 'fs';
 
@@ -7,9 +7,6 @@ export enum DIRECTION {
   LEFT = 0,
   RIGHT = 1,
 }
-
-// A character type for readability. It is just a string of length 1.
-type char = string;
 
 /**
  * Enigma machine has a RotorManager that encrypts and decrypts letters, using a set of rotors.

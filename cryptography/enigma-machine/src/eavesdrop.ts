@@ -136,70 +136,14 @@ export class EavesdropperClient {
       const candidates: string[] = [];
       let p: string; // plaintext candidate
       let cnt: number; // number of occurences of keyword in p
-
-      // TODO: use generator functions to generate permutations
-
-      // number of possible configurations
-      const num_attempts: number = Math.pow(alphabet.length, rotorCount);
+      const num_attempts: number = Math.pow(alphabet.length, rotorCount); // number of possible configurations
       let cur_attempt = 1;
       console.log('Running over', num_attempts, 'possibilities.');
 
-      while (num_attempts >= cur_attempt) {
-        // console.log('running attempt:', cur_attempt);
-        p = e.decrypt(target); // this mutates the rotors, so we can keep on trying
-        cnt = keywords.filter(k => p.includes(k)).length;
-        console.log('plaintext:', p);
-        if ((cnt / keywords.length) * 100 >= percentage) {
-          candidates.push(p);
-        }
-        cur_attempt++;
-      }
+      // TODO: use generator functions to generate permutations
+      candidates.push('todo...');
+
       resolve(candidates);
     });
   }
-}
-
-function permute(str: string) {
-  let k: number;
-  let l: number;
-  let i: number;
-  let j: number;
-  const n: number = str.length;
-  const s: string[] = [...str];
-  let tmp: string;
-
-  // 1. Find k
-  for (i = n - 1; i > 0; i--) {
-    if (s[i - 1] < s[i]) {
-      k = i - 1;
-      break;
-    }
-  }
-  if (i === 0) return 0;
-
-  // 2. Find l
-  for (i = n - 1; i > k; i--) {
-    if (s[k!] < s[i]) {
-      l = i;
-      return;
-    }
-  }
-
-  // 3. Swap k and l
-  tmp = s[k!];
-  s[k!] = s[l!];
-  s[l!] = tmp;
-
-  // 4. Reverse from k+1 and up
-  i = k! + 1;
-  j = n - 1;
-  while (i < j) {
-    tmp = s[i];
-    s[i] = s[j];
-    s[j] = tmp;
-    i++;
-    j--;
-  }
-
-  return 1;
 }

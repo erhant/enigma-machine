@@ -2,6 +2,7 @@ import {Enigma} from './enigma';
 import {ChatClient} from './chat';
 import minimist = require('minimist');
 import {EavesdropperClient} from './eavesdrop';
+import {generate_permutations} from './utility';
 const args: minimist.ParsedArgs = minimist(process.argv.slice(2));
 
 async function main() {
