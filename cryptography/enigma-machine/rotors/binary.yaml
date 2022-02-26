@@ -1,0 +1,7 @@
+--- # Digits only
+alphabet: "01"
+rotors: 
+  - "10"
+  - "01"
+direction: 0
+

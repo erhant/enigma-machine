@@ -5,7 +5,6 @@ import sys
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
  
-### TODO: write this again
 
 #### PARAMS #############
 SA = 'income' # we only care about 1 SA in this project.
@@ -197,7 +196,7 @@ def anonymizeOnce(df, depths):
         dfAnon[qi] = dfAnon[qi].apply(lambda q : qi_hierarchical_mappings[qi][q][min(len(qi_hierarchical_mappings[qi])-1,depths[qi])])
     return dfAnon
 
-# TODO TODO TODO TODO
+# TODO: this is not working
 def anonymize(df, dghs, k):
     def tryChildrenAndReturnMinCost(children, qi, depths):
         minCost = sys.maxsize
