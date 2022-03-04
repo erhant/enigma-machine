@@ -1,6 +1,4 @@
-### Cryptography
-
-This folder contains an [enigma machine](./enigma-machine) implementation in TypeScript, and several Q&A on various topics:
+# Cryptography Topics
 
 - [01](./01-private-key-enc-intro.pdf): private key encryption, substitute ciphers, entropy
 - [02](./02-private-key-enc-otp.pdf): one-time pad, perfect secrecy

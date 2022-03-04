@@ -1,14 +1,11 @@
-This repository includes my works related to Computer and Network Security, Data Protection and Privacy, and Cryptography.
+# Security & Cryptography
 
-- Computer and Network Security
-  - Dirty Cow Attack
-  - Kaminsky Attack
-  - SQL Injection
-- Cryptography
-  - Enigma Machine in JS
-  - Cryptography Topics
-- Data Privacy
-  - Preliminaries
-  - Anonymization Methods
-  - Differential Privacy
-  - Machine Learning Attacks
+This repository includes my works related to Computer and Network Security and Cryptography.
+
+- [Computer and Network Security](./security/)
+  - [Dirty Cow Attack](./security/dirty-cow-attack/)
+  - [Kaminsky Attack](./security/kaminsky-attack/)
+  - [SQL Injection](./security/sql-injection/)
+- [Cryptography](./cryptography/)
+  - [Enigma Machine in TypeScript](./cryptography/enigma-machine/)
+  - [Cryptography Topics](./cryptography/topics/)
