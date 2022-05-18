@@ -1,11 +1,10 @@
-# Security & Cryptography
+# Enigma Machine
 
-This repository includes my works related to Computer and Network Security and Cryptography, as part of the respecitve classes I took in Koç University.
+An Enigma Machine implementation in TypeScript. `npm install` and then `npm start -- <args>` to start with arguments. You can provide the following:
 
-- [Computer and Network Security](./security/)
-  - [Dirty Cow Attack](./security/dirty-cow-attack/)
-  - [Kaminsky Attack](./security/kaminsky-attack/)
-  - [SQL Injection](./security/sql-injection/)
-- [Cryptography](./cryptography/)
-  - [Enigma Machine in TypeScript](./cryptography/enigma-machine/)
-  - [Cryptography Topics](./cryptography/topics/)
+-  `--rotors / -r <path>`: Setup the machine with given rotor configuration at a file.
+-  `--encrypt / -e <message> `: Encrypt a message of your choice
+-  `--decrypt / -d <message> `: Decrypt a message of your choice
+-  `--chat / -c <username>`: Join chat with some username
+-  `--bombe / -b`: Run bombe to crack a message. (**todo**)
+-  `--adversary / -a`: Eavesdrop the chat as adversary, and crack messages.

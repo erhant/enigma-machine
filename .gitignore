@@ -1,4 +1,4 @@
 .notebook
 node_modules
-cryptography/enigma-machine/build
+build
 .DS_Store
